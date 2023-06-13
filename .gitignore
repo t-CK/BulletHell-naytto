@@ -1,0 +1,7 @@
+# files
+*.sln
+*.bat
+*.user
+# folders
+.vs/
+naytto_env/
