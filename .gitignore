@@ -2,6 +2,7 @@
 *.sln
 *.bat
 *.user
+*.pyproj
 # folders
 .vs/
 naytto_env/

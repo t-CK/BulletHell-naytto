@@ -1,7 +1,9 @@
+import imp
 from Log import *
 import array
 import time
 from enum import Enum
+
 
 # Enum luokka pelin statuksen seuraamista varten
 class Game_State(Enum):
@@ -33,6 +35,7 @@ class Game:
         # Ajanoton käynnistys
         while self._is_Running:
             for instance in self._game_objects:
+                instance.update_components()
                 instance.update(self._delta_time)
 
         # Ajanoton pysäytys ja _delta_time -muuttujan päivitys 
