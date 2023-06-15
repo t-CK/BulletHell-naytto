@@ -1,4 +1,3 @@
-import imp
 from Log import *
 import Window
 import array
@@ -20,19 +19,20 @@ class Game:
     _delta_time = 0.0
     _wnd :Window.Window
 
+
     def __init__(self) -> None:
         self._wnd = Window.Window()
         self._state = Game_State(2)
         self._is_Running = True
 
 #    def add_game_object(self, object :Game_Object) -> None:
-#        """Lis�� uuden peliobjektin peliin"""
+#        """Lisää uuden peliobjektin peliin"""
 #        # Tarkastetaan funktioon sy�tetyn parametrin tyyppi ja tyypin ollessa Game_Object lis�t��n se listaan
 #        # Muussa tapauksessa tulostetaan vir�heilmoitus
 #        if type(object) == GameObject:
 #            self._game_objects.append(Game_Object())
 #            return
-#        Log_Error("Game.add_game_object() sy�tettiin v��r�nlainen parametri")
+#        Log_Error("Game.add_game_object() syötettiin vääränlainen parametri")
 
     def game_loop(self):
         # Ajanoton k�ynnistys
@@ -47,3 +47,8 @@ class Game:
 
     def get_delta_time(self) -> float:
         return self._delta_time
+    
+
+if __name__ == "__main__":
+    game=Game()
+    game.game_loop()

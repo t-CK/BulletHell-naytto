@@ -3,6 +3,9 @@
 *.bat
 *.user
 *.pyproj
+
 # folders
 .vs/
 naytto_env/
+__pycache__/
+.idea/
