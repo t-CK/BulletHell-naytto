@@ -14,10 +14,3 @@ def Log_Fatal(msg :str):
     """Tulostaa terminaaliin fatal error virheilmoituksen ja laukaisee breakpointin"""
     print(f"\033[0;30;41m FATAL ERROR: {msg} \033[0;0m")
     breakpoint()
-
-if __name__ == "__main__":
-    Log_Error("testi error")
-    Log_Warning("testi Warning")
-    Log_Info("testi info")
-    Log_Fatal("testi fatal")
-    print("testi", 2*5)

@@ -22,5 +22,9 @@ class Window:
         flags_ = locals.FULLSCREEN | locals.DOUBLEBUF | locals.HWACCEL | locals.OPENGL | locals.SHOWN
         self._wnd = display.set_mode((0, 0), flags=flags_, display=0, vsync=1)
     
-    
+    def draw_frame(self, *args):
+        for entity in args:
+            pass
+
+        display.flip()
 

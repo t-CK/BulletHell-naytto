@@ -1,0 +1,45 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>9f525280-4edf-4e0d-a88f-773a3db5265b</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>BulletHell_naytto.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>BulletHell-naytto</Name>
+    <RootNamespace>BulletHell-naytto</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="BulletHell_naytto.py" />
+    <Compile Include="Engine\Components\Game_Component.py" />
+    <Compile Include="Engine\Components\Input_Component.py" />
+    <Compile Include="Engine\Components\Sprite_Component.py" />
+    <Compile Include="Engine\Game.py" />
+    <Compile Include="Engine\Log.py" />
+    <Compile Include="Engine\Window.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Engine\" />
+    <Folder Include="Engine\Components\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
