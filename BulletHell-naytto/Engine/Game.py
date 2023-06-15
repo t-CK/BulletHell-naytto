@@ -1,5 +1,6 @@
 import imp
 from Log import *
+import Window
 import array
 import time
 from enum import Enum
@@ -12,33 +13,37 @@ class Game_State(Enum):
     IN_MENU = 2
 
 class Game:
-    # Ainoastaan yksi instanssi pelistä sallitaan kerrallaan, joten Game -luokka voi olla staattinen (Luokan muuttujat tallennetaan suoraan class-variableina)
+    # Ainoastaan yksi instanssi pelistï¿½ sallitaan kerrallaan, joten Game -luokka voi olla staattinen (Luokan muuttujat tallennetaan suoraan class-variableina)
     _is_Running :bool
     _state :Game_State
     _game_objects :list
     _delta_time = 0.0
+    _wnd :Window.Window
 
     def __init__(self) -> None:
-        self._state = Game_State(0)
+        self._wnd = Window.Window()
+        self._state = Game_State(2)
         self._is_Running = True
 
 #    def add_game_object(self, object :Game_Object) -> None:
-#        """Lisää uuden peliobjektin peliin"""
-#        # Tarkastetaan funktioon syötetyn parametrin tyyppi ja tyypin ollessa Game_Object lisätään se listaan
-#        # Muussa tapauksessa tulostetaan vir´heilmoitus
+#        """Lisï¿½ï¿½ uuden peliobjektin peliin"""
+#        # Tarkastetaan funktioon syï¿½tetyn parametrin tyyppi ja tyypin ollessa Game_Object lisï¿½tï¿½ï¿½n se listaan
+#        # Muussa tapauksessa tulostetaan virï¿½heilmoitus
 #        if type(object) == GameObject:
 #            self._game_objects.append(Game_Object())
 #            return
-#        Log_Error("Game.add_game_object() syötettiin vääränlainen parametri")
+#        Log_Error("Game.add_game_object() syï¿½tettiin vï¿½ï¿½rï¿½nlainen parametri")
 
     def game_loop(self):
-        # Ajanoton käynnistys
+        # Ajanoton kï¿½ynnistys
         while self._is_Running:
+            # Loopataan peliobjektien lista ja pÃ¤ivitetÃ¤Ã¤n objektit + komponentit
             for instance in self._game_objects:
                 instance.update_components()
                 instance.update(self._delta_time)
+            # Ikkunan sisÃ¤llÃ¶n pÃ¤ivittÃ¤minen
 
-        # Ajanoton pysäytys ja _delta_time -muuttujan päivitys 
+        # Ajanoton pysï¿½ytys ja _delta_time -muuttujan pï¿½ivitys 
 
     def get_delta_time(self) -> float:
         return self._delta_time

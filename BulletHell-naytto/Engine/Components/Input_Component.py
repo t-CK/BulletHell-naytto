@@ -4,11 +4,15 @@ from pygame import event
 import Game_Component
 from pygame import display
 from .. import Log
+from .. import Window
 
 class Input_Component(Game_Component):
     _wnd :display # pygame.display, josta tarkastellaan inputtia
-    def __init__(self):
+    def __init__(self, owner):
         key.set_repeat(0, 0)
+        self._wnd = Window.Window._wnd
+        # Tallennetaan Game_Object, johon komponentti kuuluu, jotta voidaan kutsua oikean objektin metodia
+        self._owner = owner 
     
     def get_input() -> str:
         # Tarkastetaan input ja bindataan input event oikeaan funktioon
