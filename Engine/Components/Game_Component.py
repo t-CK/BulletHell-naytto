@@ -43,10 +43,10 @@ class Input_Component(Game_Component):
         for e in event.get():
             if e.type == locals.KEYDOWN:
                 if e.key == locals.K_UP:
-                    Log.Log_Info("K_UP")
+                    Log_Info("K_UP")
                 if e.key == locals.K_DOWN:
-                    Log.Log_Info("K_DOWN")
+                    Log_Info("K_DOWN")
                 if e.key == locals.K_RIGHT:
-                    Log.Log_Info("K_RIGHT")
+                    Log_Info("K_RIGHT")
                 if e.key == locals.K_LEFT:
-                    Log.Log_Info("K_LEFT")
+                    Log_Info("K_LEFT")
