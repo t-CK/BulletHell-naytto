@@ -1,4 +1,5 @@
 from Log import *
+import Game_Object
 import Window
 import array
 import time
@@ -25,14 +26,14 @@ class Game:
         self._state = Game_State(2)
         self._is_Running = True
 
-#    def add_game_object(self, object :Game_Object) -> None:
-#        """Lisää uuden peliobjektin peliin"""
-#        # Tarkastetaan funktioon sy�tetyn parametrin tyyppi ja tyypin ollessa Game_Object lis�t��n se listaan
-#        # Muussa tapauksessa tulostetaan vir�heilmoitus
-#        if type(object) == GameObject:
-#            self._game_objects.append(Game_Object())
-#            return
-#        Log_Error("Game.add_game_object() syötettiin vääränlainen parametri")
+    def add_game_object(self, object :Game_Object) -> None:
+        """Lisää uuden peliobjektin peliin"""
+        # Tarkastetaan funktioon sy�tetyn parametrin tyyppi ja tyypin ollessa Game_Object lis�t��n se listaan
+        # Muussa tapauksessa tulostetaan vir�heilmoitus
+        if type(object) == Game_Object:
+            self._game_objects.append(Game_Object())
+            return
+        Log_Error("Game.add_game_object() syötettiin vääränlainen parametri")
 
     def game_loop(self):
         # Ajanoton k�ynnistys
