@@ -3,6 +3,7 @@
 *.bat
 *.user
 *.pyproj
+*.pyproj.orig
 
 # folders
 .vs/

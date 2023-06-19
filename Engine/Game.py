@@ -40,7 +40,6 @@ class Game:
         while self._is_Running:
             # Loopataan peliobjektien lista ja päivitetään objektit + komponentit
             for instance in self._game_objects:
-                instance.update_components()
                 instance.update(self._delta_time)
             # Ikkunan sisällön päivittäminen
 
