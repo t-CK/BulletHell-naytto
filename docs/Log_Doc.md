@@ -8,9 +8,8 @@ Log_Warning: Keltainen
 Log_Info:    Vihreä
 
 käyttö esim:
-
-display.init()
-        if not display.get_init():
-            Log_Fatal("Failed to initialize pygame.display")
-            sys.exit()
-        Log_Info("Initialized pygame.display")
+        display.init()
+                if not display.get_init():
+                    Log_Fatal("Failed to initialize pygame.display")
+                    sys.exit()
+                Log_Info("Initialized pygame.display")
