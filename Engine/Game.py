@@ -2,8 +2,8 @@ import Log
 from pygame import event
 from pygame import key
 from pygame import time
+from pygame import locals
 from enum import Enum
-
 
 
 # Enum luokka pelin statuksen seuraamista varten
@@ -38,13 +38,14 @@ class Game:
                 if event.peek():
                     keys = key.get_pressed()
                     e = event.poll()
-                    if keys[event.K_ESCAPE]:
+                    if keys[locals.K_ESCAPE]:
                         self._state = 0
                 Log.Log_Info("PAUSED")
                 continue
             if event.peek():
                 e = event.poll()
-                if keys[event.K_ESCAPE]:
+                keys = key.get_pressed()
+                if keys[locals.K_ESCAPE]:
                     self._state = Game_State.PAUSED
             Log.Log_Info(self._delta_time)
             # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
@@ -59,6 +60,8 @@ class Game:
                 print(self._delta_time)
                 # Päivitetään peliobjektit (peliobjekti päivittää komponenttinsa ja renderöi spritet)
 #                instance.update(delta_time=self._delta_time)
+            self.wnd.fill((1, 0, 1))
+            display.flip()
             
 
 
