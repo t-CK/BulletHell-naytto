@@ -235,8 +235,8 @@ def check_collisions():
     for sprite in enemies:
         if pg.sprite.spritecollide(sprite, bullets, False):
             sprite.damage()
-        if pg.sprite.spritecollide(player, enemies, False):
-            player.damage()
+    if pg.sprite.spritecollide(player, enemies, False):
+        player.damage()
 
 def render_screen():
     """Päivitä näyttö"""
