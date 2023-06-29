@@ -19,12 +19,14 @@ class Window:
         Log_Info("Initialized pygame.display")
 
         # Set window flags and create window object
-        flags_ = locals.FULLSCREEN | locals.DOUBLEBUF | locals.HWACCEL | locals.OPENGL | locals.SHOWN
+        flags_ = locals.FULLSCREEN | locals.DOUBLEBUF | locals.HWACCEL | locals.SHOWN
         self._wnd = display.set_mode((0, 0), flags=flags_, display=0, vsync=1)
+        
+    def draw_background(self):
+        self._wnd.fill(color=(255,0,255))
+        display.flip() # DEBUG
     
-    def draw_frame(self, *args):
-        for entity in args:
-            pass
-
+    def draw_object(self, img :surface.Surface):
+        self._wnd.blit(img, (0, 0))
         display.flip()
 
