@@ -1,4 +1,5 @@
 import Log
+import Window
 from pygame import event
 from pygame import key
 from pygame import time
@@ -24,16 +25,33 @@ class Game:
 
 
     def __init__(self) -> None:
-#        self._wnd = Window.Window()
+        self._wnd = Window.Window()
         self._state = Game_State(2)
         self._is_Running = True
 
 
     def game_loop(self):
         while self._is_Running:
+            # Jos peli on käynnissä, ajetaan loopin ensimmäinen if lohko
+            if self._state == Game_State.RUNNING:
+                # Otetaan vastaan input
+                # Pitää siirtää omaan luokkaansa
+                if event.peek():
+                    e = event.poll()
+                    keys = key.get_pressed()
+                    if keys[locals.K_ESCAPE]:
+                        self._state = Game_State.PAUSED
+                Log.Log_Info(self._delta_time) # DEBUG
+                # Päivitetään peliobjektit
+                # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
+                if self._prev_tick == 0.0:
+                    self._prev_tick = time.get_ticks()
+                else:
+                    self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
+
             # Jos game_state on PAUSE, asetetaan prev_tick arvoksi 0, tarkastetaan onko escape näppäintä painettu pausen lopettamiseksi
             # ja hypätään loopin alkuun
-            if self._state == Game_State.PAUSED:
+            elif self._state == Game_State.PAUSED:
                 self._prev_tick = 0.0
                 if event.peek():
                     keys = key.get_pressed()
@@ -41,28 +59,11 @@ class Game:
                     if keys[locals.K_ESCAPE]:
                         self._state = 0
                 Log.Log_Info("PAUSED")
-                continue
-            if event.peek():
-                e = event.poll()
-                keys = key.get_pressed()
-                if keys[locals.K_ESCAPE]:
-                    self._state = Game_State.PAUSED
-            Log.Log_Info(self._delta_time)
-            # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
-            if self._prev_tick == 0.0:
-                self._prev_tick = time.get_ticks()
-            else:
-                self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
+            # Renderöidään menu tarvittaessa
+            elif self._state == Game_State.IN_MENU:
+                pass
             # Tyhjennetään ikkunan sisältö ja renderöidään taustaväri
-#            self._wnd.draw_background()
-            # Loopataan peliobjektien lista ja päivitetään objektit + komponentit
-            for instance in self._game_objects:
-                print(self._delta_time)
-                # Päivitetään peliobjektit (peliobjekti päivittää komponenttinsa ja renderöi spritet)
-#                instance.update(delta_time=self._delta_time)
-            self.wnd.fill((1, 0, 1))
-            display.flip()
-            
+            self._wnd.draw_background()
 
 
     def get_delta_time(self) -> float:
