@@ -5,5 +5,9 @@ Window(class):
 
     __init__:
         Initialisoi pygame.display:n ja suorittaa virheentarkastuksen.
-        Asettaa pygame -ikkunan flagit (locals.FULLSCREEN | locals.DOUBLEBUF | locals.HWACCEL | locals.OPENGL | locals.SHOWN) ja, luo pygame -ikkunan ja tallentaa sen _wnd -muuttujaan
+        Asettaa pygame -ikkunan flagit (locals.FULLSCREEN | locals.DOUBLEBUF | locals.HWACCEL | locals.SHOWN) ja, luo pygame -ikkunan ja tallentaa sen _wnd -muuttujaan
 
+    draw_background:
+        Päivittää ikkunan taustan magneta -värillä
+       
+    

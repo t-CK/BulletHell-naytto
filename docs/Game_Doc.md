@@ -17,12 +17,9 @@ Game(class):
     __init__:
         Initialisoidaan Game -luokka: initialisoidaan _wnd -olio, asetetaan _is_running arvoiksi True ja _state tilaksi IN_MENU(2)
 
-    add_game_object:
-        Lisätään Game_Object _game_objects -listaan. Pitää kutsua joka kerta, kun uusi peliobjekti luodaan.
-        Ottaa parametrina Game_Object -olion ja suorittaa virheentarkastuksen (Käyttää Log_error -metodia tulostamaan virheilmoituksen, mikäli annetun parametrin tyyppi on vääränlainen)
-
     game_loop:
-        Laskee _delta_timen ja suorittaa peliobjektien, komponenttien ja ikkunan päivittämisen while(_is_running) loopissa.
+        Tarkkailee Game State:a ja hoitaa pelin päivittämisen tai valikot asianmukaisesti.
+        Laskee delta timen ja tallentaa _delta_time -muuttujaan.
 
     get_delta_time:
         Lähettää palautusarvona _delta_time(float) -muuttujan
