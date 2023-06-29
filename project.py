@@ -26,10 +26,13 @@ class Player(pg.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.hp = hp
         self.speed = DEFAULT_SPEED
+        self.invulnerable = 0 # Ticks of invulnerability
         
         all_sprites.add(self)
         
     def update(self):
+        if self.invulnerable > 0:
+            self.invulnerable -= 1
         # Keyboard input for player movement with arrows & WASD
         if not mouse_movement_enabled:
             keys = pg.key.get_pressed()
@@ -72,9 +75,14 @@ class Player(pg.sprite.Sprite):
 
         
     def damage(self, amount = 1):
-        self.hp -= amount
-        if self.hp <= 0:
-            player_death()
+        if not self.invulnerable:
+            self.hp -= amount
+            print("damage")
+            self.invulnerable = 10
+            
+            if self.hp <= 0:
+                player_death()
+            
 
             
 class Bullet(pg.sprite.Sprite):
@@ -235,8 +243,8 @@ def check_collisions():
     for sprite in enemies:
         if pg.sprite.spritecollide(sprite, bullets, False):
             sprite.damage()
-    if pg.sprite.spritecollide(player, enemies, False):
-        player.damage()
+        if sprite.rect.colliderect(player):
+            player.damage()
 
 def render_screen():
     """Päivitä näyttö"""
