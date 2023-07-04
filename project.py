@@ -3,16 +3,16 @@ from pygame.locals import *
 
 pg.init()
 
-SCREEN_SIZE = (WIDTH, HEIGHT) = 1200, 900
+SCREEN_SIZE = (WIDTH, HEIGHT) = 1000, 700
 SCREEN = pg.display.set_mode(SCREEN_SIZE)
 
-SPRITE_SCALE = 3
+SPRITE_SCALE = 2
 
 FPS = 60
-DEFAULT_SPEED = 5
+DEFAULT_SPEED = 4
 DEFAULT_PICKUP_DISTANCE = 30
 
-SPAWN_TIME = 200
+STARTING_SPAWN_TIME = 200
 
 clock = pg.time.Clock()
 
@@ -20,12 +20,13 @@ all_sprites = pg.sprite.Group()
 bullets = pg.sprite.Group()
 enemies = pg.sprite.Group()
 collideable = pg.sprite.Group()
+ui = pg.sprite.Group()
 
 ticks = 0
 mouse_movement_enabled = False
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, hp = 10):
+    def __init__(self, hp = 20):
         super().__init__()
         try:
             self.surf = pg.image.load("player.png").convert()
@@ -33,13 +34,16 @@ class Player(pg.sprite.Sprite):
         except FileNotFoundError:
             self.surf = pg.Surface([15, 20])
             self.surf.fill((255,255,255))
-        if not (SPRITE_SCALE == 1 or SPRITE_SCALE is None):
+        if (SPRITE_SCALE > 1):
             self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
-        
+
         self.rect = self.surf.get_rect()
         self.hp = hp
+        self.hp_max = hp
         self.speed = DEFAULT_SPEED
         self.xp = 0
+        self.xp_to_next_level = 100
+        self.lvl = 1
         self.invulnerable = 0 # Ticks of invulnerability
         self.pickup_distance = DEFAULT_PICKUP_DISTANCE * SPRITE_SCALE
 
@@ -95,6 +99,19 @@ class Player(pg.sprite.Sprite):
                         while pg.sprite.spritecollideany(self, collideable):
                             self.rect.move_ip(0, 1)
 
+    def get_hp(self):
+        return self.hp
+
+    def get_hp_max(self):
+        return self.hp_max
+        
+    def get_xp(self):
+        return self.xp
+        
+    def get_xp_to_next_level(self):
+        return self.xp_to_next_level
+        
+    
     def damage(self, amount = 1):
         if not self.invulnerable:
             self.hp -= amount
@@ -102,6 +119,12 @@ class Player(pg.sprite.Sprite):
 
             if self.hp <= 0:
                 player_death()
+                
+    def levelup(self):
+        self.xp -= self.xp_to_next_level
+        self.xp_to_next_level *= 1.5
+        self.lvl += 1
+
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self):
@@ -115,10 +138,10 @@ class Bullet(pg.sprite.Sprite):
 
 class Bullet_Line(Bullet):
     """ Bullet flying in a straight line
-    
-    Takes two points as tuples or Sprites, spawns at [origin] and follows a line going 
+
+    Takes two points as tuples or Sprites, spawns at [origin] and follows a line going
     through [target]. Flies at [speed] pixels per tick for [ttl] (time to live) ticks.
-    
+
     NOTE: Will not register collision when passing through an enemy in a single tick.
     """
     def __init__(self, target: tuple or Sprite = None, origin: tuple or Sprite = None, ttl = 60, speed = 5):
@@ -152,7 +175,7 @@ class Bullet_Line(Bullet):
 
 class Bullet_Orbit(Bullet):
     """ Bullet object circling a constant point at (x,y) or a Sprite.
-    
+
     Speed-attribute affects time to do a complete circle, thus the velocity of
     the projectile depends on radius as well as speed.
     """
@@ -178,7 +201,7 @@ class Bullet_Orbit(Bullet):
 class Enemy(pg.sprite.Sprite):
     def __init__(self, position = (0,0), hp = 3, speed = 1, dmg = 1):
         super().__init__()
-        
+
         try:
             self.surf = pg.image.load("enemy.png").convert()
             self.surf.set_colorkey((0,255,0))
@@ -187,9 +210,9 @@ class Enemy(pg.sprite.Sprite):
             self.surf = pg.Surface([12, 19])
             self.color = (60,255,60)
             self.surf.fill(self.color)
-        if not (SPRITE_SCALE == 1 or SPRITE_SCALE is None):
+        if (SPRITE_SCALE > 1):
             self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
-        
+
         self.rect = self.surf.get_rect()
 
         self.rect.center = position
@@ -229,7 +252,7 @@ class Enemy(pg.sprite.Sprite):
         if self.invulnerable:
             return
         self.hp -= amount
-        
+
         self.surf = pg.transform.scale_by(self.surf, 0.8)
         if self.color:
             temp_color_r, temp_color_g, temp_color_b = self.color
@@ -244,7 +267,7 @@ class Enemy(pg.sprite.Sprite):
         self.invulnerable = 5
         if self.hp <= 0:
             self.death()
-            
+
     def death(self):
         Xp(*self.rect.center, random.randrange(len(Xp._colors))+1)
         self.kill()
@@ -252,14 +275,14 @@ class Enemy(pg.sprite.Sprite):
 
 class World(pg.sprite.Sprite):
     """ World object such as an obstacle or a special area of the level
-    
+
     [pos_x] and [pos_y] are coordinates for the top left corner, sizes are the
     sides down and right from that point. If [solid] is True, will be impassable.
     """
     def __init__(self, pos_x, pos_y, size_x, size_y, solid = True):
         super().__init__()
         self.surf = pg.Surface([size_x, size_y])
-        self.surf.fill((255,0,0))
+        self.surf.fill((200,30,30))
         self.rect = self.surf.get_rect()
         self.solid = solid
 
@@ -268,11 +291,11 @@ class World(pg.sprite.Sprite):
         all_sprites.add(self)
         if self.solid:
             collideable.add(self)
-            
+
 class Xp(pg.sprite.Sprite):
     """ XP globe dying enemies drop """
     # Testinä huvin vuoks lista väreistä xp-arvon mukaan:
-    _colors = [(140, 70, 255), (200, 70, 230), (255, 180, 120), (200, 240, 0), (200, 200, 40), (255, 255, 100)]
+    _colors = [(140, 70, 255), (200, 70, 230), (255, 180, 120), (180, 240, 0), (200, 200, 40), (255, 255, 100)]
     def __init__(self, pos_x, pos_y, xp_amount = 1):
         super().__init__()
         self.size = 5 + 3*xp_amount
@@ -284,29 +307,69 @@ class Xp(pg.sprite.Sprite):
             self.surf.fill(self._colors[-1])
         self.rect = self.surf.get_rect()
         self.rect.center = (pos_x, pos_y)
-        
+
         all_sprites.add(self)
-        
+
     def update(self):
         if get_distance(self, player) < player.pickup_distance:
             self.pickup()
-            
+
     def pickup(self):
         self.kill()
         player.xp += self.xp_amount
-        
+        if player.xp >= player.xp_to_next_level:
+            player.levelup()
+
 
 class Ui(pg.sprite.Sprite):
-    """ Testailun jäänteitä; per-pixel alpha toimii, mutta ilmeisesti hidas,
-        kannattanee oikeasti toteuttaa UI-layer pygame:n set_colorkey():llä
-        kunhan sovitaan sille väri
-    """
+    """ UI parent class (pretty unnecessary at the moment) """
     def __init__(self):
         super().__init__()
-        self.surf = pg.Surface((SCREEN_SIZE), pg.SRCALPHA)
-        self.surf.fill((0,0,0,0))
-        self.rect = self.surf.get_rect()
+        self.surf = pg.Surface((SCREEN_SIZE))
+        self.surf.fill((0, 255, 0))
+        self.surf.set_colorkey((0, 255, 0))
 
+        all_sprites.add(self)
+        ui.add(self)
+
+class Ui_Bar(Ui):
+    """ XP / Health bar on top of screen 
+    
+    Variables value and value_max are methods, that are called to get the
+    current and maximum values for the bar's length
+    """
+    def __init__(self, value = None, value_max = None):
+        super().__init__()
+        self.bar_height = HEIGHT//100
+        self.bar_max_width = WIDTH//2
+        self.surf = pg.Surface((self.bar_max_width, self.bar_height))
+        self.rect = self.surf.get_rect()
+        self.surf.fill((0, 255, 0))
+        self.surf.set_colorkey((0, 255, 0))
+        self.color = (0, 0, 0)
+        self.value = value
+        self.value_max = value_max
+                
+    def update(self):
+        if not self.value_max:
+            bar_width = 0
+        else:
+            bar_width = self.value()/self.value_max() * self.bar_max_width
+        
+        pg.draw.rect(self.surf, (0, 0, 0), (0, 0, self.bar_max_width, self.bar_height), 0, HEIGHT//300)
+        pg.draw.rect(self.surf, self.color, (0, 0, bar_width, self.bar_height), 0, HEIGHT//300)
+
+class Ui_Bar_XP(Ui_Bar):
+    def __init__(self):
+        super().__init__(player.get_xp, player.get_xp_to_next_level)
+        self.rect.topleft = (WIDTH//4, HEIGHT//19 + 7)
+        self.color = (150, 50, 255)
+
+class Ui_Bar_Health(Ui_Bar):
+    def __init__(self):
+        super().__init__(player.get_hp, player.get_hp_max)
+        self.rect.topleft = (WIDTH//4, HEIGHT//19 - 7)
+        self.color = (255, 0, 0)
 
 def main():
     """ Initialization and main loop """
@@ -315,6 +378,8 @@ def main():
 
     player = Player()
     player.rect.center = (WIDTH//2, HEIGHT//2)
+    Ui_Bar_XP()
+    Ui_Bar_Health()
 
     initialize_level()
 
@@ -331,16 +396,17 @@ def main():
 def initialize_level():
     global spawn_timer
     # Spawn a few random obstacles
-    for _ in range(WIDTH//150):
-        size = (size_x, size_y) = (random.randint(20*SPRITE_SCALE,100*SPRITE_SCALE), random.randint(20*SPRITE_SCALE,100*SPRITE_SCALE))
+    for _ in range(WIDTH // 150):
+        size = (size_x, size_y) = (random.randint(20*SPRITE_SCALE, 100*SPRITE_SCALE),
+                                   random.randint(20*SPRITE_SCALE, 100*SPRITE_SCALE))
         position = (pos_x, pos_y) = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
         while abs(pos_x - player.rect.center[0]) < 50 + size_x or abs(pos_y - player.rect.center[1]) < 50 + size_y:
             position = (pos_x, pos_y) = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
         World(*position, *size)
-    spawn_timer = SPAWN_TIME
+    spawn_timer = STARTING_SPAWN_TIME
 
 def spawn_enemies():
-    """ Spawns enemies at decreasing intervals, starting at SPAWN_TIME ticks apart """
+    """ Spawns enemies at decreasing intervals, starting at STARTING_SPAWN_TIME ticks apart """
     global spawn_timer
     global ticks
     spawn_timer -= 1
@@ -360,11 +426,11 @@ def spawn_enemies():
             x = -30
             y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
         Enemy((x,y))
-        
-        # spawn_timer = SPAWN_TIME
-        
+
+        # spawn_timer = STARTING_SPAWN_TIME
+
         # Testing, probably temporary:
-        spawn_timer = SPAWN_TIME - ticks//100 if SPAWN_TIME - ticks//100 > 10 else 10
+        spawn_timer = STARTING_SPAWN_TIME - ticks//100 if STARTING_SPAWN_TIME - ticks//100 > 10 else 10
 
 
 def process_event_queue():
@@ -394,13 +460,13 @@ def process_event_queue():
         """
         global prev
         if event.type == KEYDOWN:
-            if event.key == K_1:    
+            if event.key == K_1:
                 player.speed -= 1
-            elif event.key == K_2:  
+            elif event.key == K_2:
                 player.speed += 1
-            elif event.key == K_3:  
+            elif event.key == K_3:
                 prev = Bullet_Orbit(player, random.randrange(20,200), random.randrange(10,50))
-            elif event.key == K_4:  
+            elif event.key == K_4:
                 try:
                     Bullet_Orbit(prev, random.randrange(5,30), random.randrange(1,50))
                 except:
@@ -430,11 +496,18 @@ def render_screen():
     SCREEN.fill((20,20,150))
     for sprite in all_sprites:
         SCREEN.blit(sprite.surf, sprite.rect)
+    # Tiedän että ui piirretään näin kahdesti, koska on myös all_spritesissa,
+    # mutta jostain syystä ei piirry, jos ei ole siinäkin.
+    # Toistetaan se anyway, jotta ui on päällimmäisenä.
+    for sprite in ui:
+        SCREEN.blit(sprite.surf, sprite.rect)
     pg.display.flip()
 
 
 def player_death():
-    pass
+    """ Very much temporary, just playing around for now """
+    player.surf = pg.transform.rotate(player.surf, 90)
+    player.update = lambda *_: None
 
 def get_closest_enemy(position: tuple or Sprite = None):
     """ Return enemy Sprite closest to passed point or Sprite (or player by default) """
@@ -452,7 +525,7 @@ def get_closest_enemy(position: tuple or Sprite = None):
     return target
 
 def get_random_enemy():
-    """ Return a random enemy Sprite """
+    """ Return a random enemy Sprite (or None) """
     if len(enemies) > 0:
         return enemies.sprites()[random.randrange(len(enemies))]
     else:
@@ -465,7 +538,7 @@ def get_distance(point1, point2):
     if type(point2) is not tuple:
         point2 = point2.rect.center
     return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
-    
+
 def get_step_toward(origin: tuple or Sprite, target: tuple or Sprite, speed = 5):
     """ Return a tuple for movement from [origin] to [target] at [speed] pixels per tick """
     if not type(origin) == tuple:
