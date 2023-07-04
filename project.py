@@ -3,13 +3,16 @@ from pygame.locals import *
 
 pg.init()
 
-SCREEN_SIZE = (WIDTH, HEIGHT) = 800, 600
+SCREEN_SIZE = (WIDTH, HEIGHT) = 1200, 900
 SCREEN = pg.display.set_mode(SCREEN_SIZE)
+
+SPRITE_SCALE = 3
 
 FPS = 60
 DEFAULT_SPEED = 5
+DEFAULT_PICKUP_DISTANCE = 30
 
-SPAWN_TIME = 20
+SPAWN_TIME = 200
 
 clock = pg.time.Clock()
 
@@ -21,16 +24,24 @@ collideable = pg.sprite.Group()
 ticks = 0
 mouse_movement_enabled = False
 
-
 class Player(pg.sprite.Sprite):
     def __init__(self, hp = 10):
         super().__init__()
-        self.surf = pg.Surface([20, 20])
-        self.surf.fill((255,255,255))
+        try:
+            self.surf = pg.image.load("player.png").convert()
+            self.surf.set_colorkey((0,255,0))
+        except FileNotFoundError:
+            self.surf = pg.Surface([15, 20])
+            self.surf.fill((255,255,255))
+        if not (SPRITE_SCALE == 1 or SPRITE_SCALE is None):
+            self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
+        
         self.rect = self.surf.get_rect()
         self.hp = hp
         self.speed = DEFAULT_SPEED
+        self.xp = 0
         self.invulnerable = 0 # Ticks of invulnerability
+        self.pickup_distance = DEFAULT_PICKUP_DISTANCE * SPRITE_SCALE
 
         all_sprites.add(self)
 
@@ -105,20 +116,20 @@ class Bullet(pg.sprite.Sprite):
 class Bullet_Line(Bullet):
     """ Bullet flying in a straight line
     
-    Takes two points as tuples or Sprites, spawns at [position] and follows a line going 
+    Takes two points as tuples or Sprites, spawns at [origin] and follows a line going 
     through [target]. Flies at [speed] pixels per tick for [ttl] (time to live) ticks.
     
     NOTE: Will not register collision when passing through an enemy in a single tick.
     """
-    def __init__(self, target: tuple or Sprite = None, position: tuple or Sprite = None, ttl = 50, speed = 5):
+    def __init__(self, target: tuple or Sprite = None, origin: tuple or Sprite = None, ttl = 60, speed = 5):
         super().__init__()
         self.ttl = ttl
         self.speed = speed
-        if not position:
-            self.position = player.rect.center
-        elif type(position) is not tuple:
-            self.position = position.rect.center
-        self.rect.center = self.position
+        if not origin:
+            self.origin = player.rect.center
+        elif type(origin) is not tuple:
+            self.origin = origin.rect.center
+        self.rect.center = self.origin
         if target:
             if type(target) is tuple:
                 self.target = target
@@ -126,14 +137,11 @@ class Bullet_Line(Bullet):
                 self.target = target.rect.center
         else:
             try:
-                self.target = get_closest_enemy(self.position).rect.center
+                self.target = get_closest_enemy(self.origin).rect.center
             except AttributeError:  # Raised if there are no enemies
                 self.kill()
                 return
-        
-        distance = max(1, get_distance(self.target, self.position)) # To prevent division by zero
-        self.step = (self.speed*(self.target[0] - self.position[0])/distance,
-                     self.speed*(self.target[1] - self.position[1])/distance)
+        self.step = get_step_toward(self.origin, self.target)
 
     def update(self):
         if self.ttl > 0:
@@ -170,10 +178,20 @@ class Bullet_Orbit(Bullet):
 class Enemy(pg.sprite.Sprite):
     def __init__(self, position = (0,0), hp = 3, speed = 1, dmg = 1):
         super().__init__()
-        self.surf = pg.Surface([15, 15])
-        self.color = (60,255,60)
-        self.surf.fill(self.color)
+        
+        try:
+            self.surf = pg.image.load("enemy.png").convert()
+            self.surf.set_colorkey((0,255,0))
+            self.color = None
+        except FileNotFoundError:
+            self.surf = pg.Surface([12, 19])
+            self.color = (60,255,60)
+            self.surf.fill(self.color)
+        if not (SPRITE_SCALE == 1 or SPRITE_SCALE is None):
+            self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
+        
         self.rect = self.surf.get_rect()
+
         self.rect.center = position
         self.hp = hp
         self.speed = speed
@@ -213,18 +231,23 @@ class Enemy(pg.sprite.Sprite):
         self.hp -= amount
         
         self.surf = pg.transform.scale_by(self.surf, 0.8)
-        temp_color_r, temp_color_g, temp_color_b = self.color
-        temp_color_g = max(temp_color_g-100, 0)
-        temp_color_b = min(temp_color_b+100, 255)
-        self.color = temp_color_r, temp_color_g, temp_color_b
-        self.surf.fill(self.color)
+        if self.color:
+            temp_color_r, temp_color_g, temp_color_b = self.color
+            temp_color_g = max(temp_color_g-100, 0)
+            temp_color_b = min(temp_color_b+100, 255)
+            self.color = temp_color_r, temp_color_g, temp_color_b
+            self.surf.fill(self.color)
         temp_center = self.rect.center
         self.rect = self.surf.get_rect()
         self.rect.center = temp_center
 
         self.invulnerable = 5
         if self.hp <= 0:
-            self.kill()
+            self.death()
+            
+    def death(self):
+        Xp(*self.rect.center, random.randrange(len(Xp._colors))+1)
+        self.kill()
 
 
 class World(pg.sprite.Sprite):
@@ -245,7 +268,33 @@ class World(pg.sprite.Sprite):
         all_sprites.add(self)
         if self.solid:
             collideable.add(self)
-
+            
+class Xp(pg.sprite.Sprite):
+    """ XP globe dying enemies drop """
+    # Testinä huvin vuoks lista väreistä xp-arvon mukaan:
+    _colors = [(140, 70, 255), (200, 70, 230), (255, 180, 120), (200, 240, 0), (200, 200, 40), (255, 255, 100)]
+    def __init__(self, pos_x, pos_y, xp_amount = 1):
+        super().__init__()
+        self.size = 5 + 3*xp_amount
+        self.surf = pg.Surface([self.size, self.size])
+        self.xp_amount = xp_amount
+        if xp_amount <= len(self._colors):
+            self.surf.fill(self._colors[xp_amount-1])
+        else:
+            self.surf.fill(self._colors[-1])
+        self.rect = self.surf.get_rect()
+        self.rect.center = (pos_x, pos_y)
+        
+        all_sprites.add(self)
+        
+    def update(self):
+        if get_distance(self, player) < player.pickup_distance:
+            self.pickup()
+            
+    def pickup(self):
+        self.kill()
+        player.xp += self.xp_amount
+        
 
 class Ui(pg.sprite.Sprite):
     """ Testailun jäänteitä; per-pixel alpha toimii, mutta ilmeisesti hidas,
@@ -260,7 +309,7 @@ class Ui(pg.sprite.Sprite):
 
 
 def main():
-    """ Main loop """
+    """ Initialization and main loop """
     global ticks
     global player
 
@@ -283,7 +332,7 @@ def initialize_level():
     global spawn_timer
     # Spawn a few random obstacles
     for _ in range(WIDTH//150):
-        size = (size_x, size_y) = (random.randint(20,120), random.randint(20,120))
+        size = (size_x, size_y) = (random.randint(20*SPRITE_SCALE,100*SPRITE_SCALE), random.randint(20*SPRITE_SCALE,100*SPRITE_SCALE))
         position = (pos_x, pos_y) = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
         while abs(pos_x - player.rect.center[0]) < 50 + size_x or abs(pos_y - player.rect.center[1]) < 50 + size_y:
             position = (pos_x, pos_y) = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
@@ -291,8 +340,9 @@ def initialize_level():
     spawn_timer = SPAWN_TIME
 
 def spawn_enemies():
-    """ Spawn an enemy every SPAWN_TIME ticks """
+    """ Spawns enemies at decreasing intervals, starting at SPAWN_TIME ticks apart """
     global spawn_timer
+    global ticks
     spawn_timer -= 1
     if spawn_timer == 0:
         # Randomize spawn direction (up, right, down, left) and set x and y to be a bit off-screen on that side
@@ -310,7 +360,12 @@ def spawn_enemies():
             x = -30
             y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
         Enemy((x,y))
-        spawn_timer = SPAWN_TIME
+        
+        # spawn_timer = SPAWN_TIME
+        
+        # Testing, probably temporary:
+        spawn_timer = SPAWN_TIME - ticks//100 if SPAWN_TIME - ticks//100 > 10 else 10
+
 
 def process_event_queue():
     global mouse_movement_enabled
@@ -326,16 +381,26 @@ def process_event_queue():
         if event.type == KEYDOWN and event.key == K_m:
             mouse_movement_enabled = not mouse_movement_enabled
 
-        # Omaa testailua / "Debug-napit"
+        # Omaa testailua / Väliaikaiset "Debug-napit"
+        """ 1 = Player speed down
+            2 = Player speed up
+            3 = Spawn bullet orbiting player
+            4 = Spawn bullet orbiting previous bullet spawned with 3
+            5 = Despawn bullets
+            6 = Spawn bullet towards closest enemy
+            7 = Spawn bullet towards random enemy
+            9 = Spawn enemy
+            0 = Kill enemies
+        """
         global prev
         if event.type == KEYDOWN:
-            if event.key == K_1:
+            if event.key == K_1:    
                 player.speed -= 1
-            elif event.key == K_2:
+            elif event.key == K_2:  
                 player.speed += 1
-            elif event.key == K_3:
+            elif event.key == K_3:  
                 prev = Bullet_Orbit(player, random.randrange(20,200), random.randrange(10,50))
-            elif event.key == K_4:
+            elif event.key == K_4:  
                 try:
                     Bullet_Orbit(prev, random.randrange(5,30), random.randrange(1,50))
                 except:
@@ -343,13 +408,15 @@ def process_event_queue():
             elif event.key == K_5:
                 for sprite in bullets:
                     sprite.kill()
-            elif event.key == K_6:
-                Bullet_Line()
             elif event.key == K_9:
                 Enemy()
             elif event.key == K_0:
                 for sprite in enemies:
-                    sprite.kill()
+                    sprite.death()
+        if pg.key.get_pressed()[K_6]:
+            Bullet_Line()
+        if pg.key.get_pressed()[K_7]:
+            Bullet_Line(get_random_enemy())
 
 def check_collisions():
     for sprite in enemies:
@@ -357,6 +424,7 @@ def check_collisions():
             sprite.damage()
         if pg.sprite.collide_rect_ratio(1.01)(sprite, player):
             player.damage(sprite.dmg)
+            sprite.damage()
 
 def render_screen():
     SCREEN.fill((20,20,150))
@@ -369,7 +437,7 @@ def player_death():
     pass
 
 def get_closest_enemy(position: tuple or Sprite = None):
-    """ Return enemy Sprite closest to passed point or Sprite """
+    """ Return enemy Sprite closest to passed point or Sprite (or player by default) """
     if len(enemies) == 0:
         return None
     target = (target_x, target_y) = (0,0)
@@ -385,7 +453,10 @@ def get_closest_enemy(position: tuple or Sprite = None):
 
 def get_random_enemy():
     """ Return a random enemy Sprite """
-    return enemies.sprites()[random.randrange(len(enemies))]
+    if len(enemies) > 0:
+        return enemies.sprites()[random.randrange(len(enemies))]
+    else:
+        return None
 
 def get_distance(point1, point2):
     """ Return distance between two tuples or Sprites """
@@ -394,6 +465,15 @@ def get_distance(point1, point2):
     if type(point2) is not tuple:
         point2 = point2.rect.center
     return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
+    
+def get_step_toward(origin: tuple or Sprite, target: tuple or Sprite, speed = 5):
+    """ Return a tuple for movement from [origin] to [target] at [speed] pixels per tick """
+    if not type(origin) == tuple:
+        origin = origin.rect.center
+    if not type(target) == tuple:
+        target = target.rect.center
+    distance = max(1, get_distance(origin, target)) # To prevent division by zero
+    return (speed*(target[0] - origin[0])/distance, speed*(target[1] - origin[1])/distance)
 
 
 if __name__ == "__main__":
