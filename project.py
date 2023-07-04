@@ -26,6 +26,22 @@ ticks = 0
 mouse_movement_enabled = False
 
 class Player(pg.sprite.Sprite):
+    """ Player sprite object with various attributes
+    
+    Variables: (in addition to pygame's Sprite stuff)
+        hp, hp_max, speed, lvl, xp: Self-explanatory
+        xp_to_next_level: XP points needed for next level. XP resets on leveling.
+        invulnerable: Ticks of invulnerability (i-frames)
+        pickup_distance: Distance from which XP and pickups are picked up
+        
+    Methods:
+        update(): Pygame's Sprite-update. Decreases i-frames, also checks for movement input for now.
+        get_hp(), get_hp_max(), get_xp(), get_xp_to_next_level(): Getters for variables
+        damage(amount = 1): Decreases player's HP by [amount] and sets i-frames.
+        levelup(): Trigger leveling up; increases [xp_to_next_level] and resets [xp].
+            (levelup() is, at least for now, called by Xp.pickup() and not Player)
+        
+    """
     def __init__(self, hp = 20):
         super().__init__()
         try:
@@ -36,20 +52,20 @@ class Player(pg.sprite.Sprite):
             self.surf.fill((255,255,255))
         if (SPRITE_SCALE > 1):
             self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
-
         self.rect = self.surf.get_rect()
         self.hp = hp
         self.hp_max = hp
         self.speed = DEFAULT_SPEED
+        self.lvl = 1
         self.xp = 0
         self.xp_to_next_level = 100
-        self.lvl = 1
-        self.invulnerable = 0 # Ticks of invulnerability
+        self.invulnerable = 0
         self.pickup_distance = DEFAULT_PICKUP_DISTANCE * SPRITE_SCALE
 
         all_sprites.add(self)
 
     def update(self):
+        """ Decreases i-frames, also checks for movement input for now. """
         if self.invulnerable > 0:
             self.invulnerable -= 1
         # Keyboard input for player movement with arrows & WASD
@@ -113,6 +129,7 @@ class Player(pg.sprite.Sprite):
         
     
     def damage(self, amount = 1):
+        """ Decrease HP and set i-frames. """
         if not self.invulnerable:
             self.hp -= amount
             self.invulnerable = 10
@@ -127,6 +144,7 @@ class Player(pg.sprite.Sprite):
 
 
 class Bullet(pg.sprite.Sprite):
+    """ Parent class for bullets """
     def __init__(self):
         super().__init__()
         self.surf = pg.Surface([5,5])
@@ -191,6 +209,7 @@ class Bullet_Orbit(Bullet):
             self.center_object = center_object
 
     def update(self):
+        """ If the center is not a tuple, update center point, then calculate position. """
         if self.center_object:
             self.center = (self.centerx, self.centery) = self.center_object.rect.center
 
@@ -199,9 +218,20 @@ class Bullet_Orbit(Bullet):
 
 
 class Enemy(pg.sprite.Sprite):
+    """ Rudimentary enemy sprite object (probably gonna move much of this to a child class)
+    
+    Variables: (in addition to pygame's Sprite stuff)
+        hp, speed: Self-explanatory
+        dmg: Damage the enemy deals when bumping into player
+        invulnerable: Ticks of invulnerability (i-frames)
+        
+    Methods:
+        update(): Pygame's Sprite-update. Decrease i-frames and move towards player. (+ collision)
+        damage(): Decrease HP (if not invulnerable) and set i-frames. Call death() if needed.
+        death(): Drop XP and kill sprite. No death animations, at least not yet.
+    """
     def __init__(self, position = (0,0), hp = 3, speed = 1, dmg = 1):
         super().__init__()
-
         try:
             self.surf = pg.image.load("enemy.png").convert()
             self.surf.set_colorkey((0,255,0))
@@ -214,8 +244,8 @@ class Enemy(pg.sprite.Sprite):
             self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
 
         self.rect = self.surf.get_rect()
-
         self.rect.center = position
+        
         self.hp = hp
         self.speed = speed
         self.dmg = dmg
@@ -226,6 +256,7 @@ class Enemy(pg.sprite.Sprite):
         enemies.add(self)
 
     def update(self):
+        """ Decrease i-frames and move towards player. Move back until there's no collision. """
         if self.invulnerable > 0:
             self.invulnerable -= 1
 
@@ -249,12 +280,13 @@ class Enemy(pg.sprite.Sprite):
         collideable.add(self)
 
     def damage(self, amount = 1):
+        """ Decrease HP (and Surface size) and set i-frames. """
         if self.invulnerable:
             return
         self.hp -= amount
 
         self.surf = pg.transform.scale_by(self.surf, 0.8)
-        if self.color:
+        if self.color:  # If sprite's image is not loaded
             temp_color_r, temp_color_g, temp_color_b = self.color
             temp_color_g = max(temp_color_g-100, 0)
             temp_color_b = min(temp_color_b+100, 255)
@@ -269,6 +301,7 @@ class Enemy(pg.sprite.Sprite):
             self.death()
 
     def death(self):
+        """ Drop XP and die """
         Xp(*self.rect.center, random.randrange(len(Xp._colors))+1)
         self.kill()
 
@@ -311,10 +344,12 @@ class Xp(pg.sprite.Sprite):
         all_sprites.add(self)
 
     def update(self):
+        """ Check distance to player and if close, call for pickup() """
         if get_distance(self, player) < player.pickup_distance:
             self.pickup()
 
     def pickup(self):
+        """ Get picked up and increase player XP """
         self.kill()
         player.xp += self.xp_amount
         if player.xp >= player.xp_to_next_level:
@@ -360,12 +395,14 @@ class Ui_Bar(Ui):
         pg.draw.rect(self.surf, self.color, (0, 0, bar_width, self.bar_height), 0, HEIGHT//300)
 
 class Ui_Bar_XP(Ui_Bar):
+    """ XP Bar on top of screen, purplish """
     def __init__(self):
         super().__init__(player.get_xp, player.get_xp_to_next_level)
         self.rect.topleft = (WIDTH//4, HEIGHT//19 + 7)
         self.color = (150, 50, 255)
 
 class Ui_Bar_Health(Ui_Bar):
+    """ Health Bar on top of screen, red """
     def __init__(self):
         super().__init__(player.get_hp, player.get_hp_max)
         self.rect.topleft = (WIDTH//4, HEIGHT//19 - 7)
@@ -394,8 +431,8 @@ def main():
 
 
 def initialize_level():
+    """ Initialize level. Just spawn a few random obstacles on screen for now. """
     global spawn_timer
-    # Spawn a few random obstacles
     for _ in range(WIDTH // 150):
         size = (size_x, size_y) = (random.randint(20*SPRITE_SCALE, 100*SPRITE_SCALE),
                                    random.randint(20*SPRITE_SCALE, 100*SPRITE_SCALE))
@@ -434,6 +471,7 @@ def spawn_enemies():
 
 
 def process_event_queue():
+    """ Check event queue for non-movement related keypresses """
     global mouse_movement_enabled
     for event in pg.event.get():
 
@@ -485,6 +523,12 @@ def process_event_queue():
             Bullet_Line(get_random_enemy())
 
 def check_collisions():
+    """ Checks for non-movement related collision.
+
+    Checks collision of bullets/enemies and enemies/player and deals damage for now.
+    Movement related collision is in each sprite's update() function, and checking
+    distance for pickups happens in the pickup's update().
+    """
     for sprite in enemies:
         if pg.sprite.spritecollideany(sprite, bullets):
             sprite.damage()
@@ -493,6 +537,7 @@ def check_collisions():
             sprite.damage()
 
 def render_screen():
+    """ Fill background, blit sprites and flip() the screen """
     SCREEN.fill((20,20,150))
     for sprite in all_sprites:
         SCREEN.blit(sprite.surf, sprite.rect)
@@ -532,7 +577,7 @@ def get_random_enemy():
         return None
 
 def get_distance(point1, point2):
-    """ Return distance between two tuples or Sprites """
+    """ Return distance between two tuples or Sprites' centers """
     if type(point1) is not tuple:
         point1 = point1.rect.center
     if type(point2) is not tuple:
