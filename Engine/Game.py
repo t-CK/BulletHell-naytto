@@ -36,6 +36,8 @@ class Game:
         # Luodaan pelaaja- ja karttaobjektit
         self._player = project.Player()
         self._map = Game_World.Map(self._player)
+        # Luodaan camera(tuple) muuttuja, jolle annetaan arvoksi pelaajan X ja Y sijainnit
+        self._camera = self._map.Update()
         # Luodaan sprite.Group spritejen renderöintiin
         self._sprite_group = sprite.Group()
         self._sprite_group.add(self._player)
@@ -48,12 +50,17 @@ class Game:
             # Jos peli on käynnissä, ajetaan loopin ensimmäinen if lohko
             if self._state == Game_State.RUNNING:
                 # Otetaan vastaan input
+                # Inputtiin lisättävä kaikkien spritejen päivittäminen: input(movement) * -1
+                
+                # Päivitetään kartta/kamera
                 # Pitää siirtää omaan luokkaansa
                 if event.peek():
                     e = event.poll()
                     keys = key.get_pressed()
                     if keys[locals.K_ESCAPE]:
                         self._state = Game_State.PAUSED
+                # Päivitetään kamera
+                self._camera = self._map.Update()
                 # Päivitetään peliobjektit
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
                 if self._prev_tick == 0.0:
