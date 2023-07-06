@@ -61,6 +61,14 @@ class Game:
                         self._state = Game_State.PAUSED
                 # Päivitetään kamera
                 self._camera = self._map.Update()
+                # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
+                for o in self._none_player_sprites:
+                    if self._sprite_group.has(o):
+                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + Game_World.SCREEN_WIDTH):
+                            self._sprite_group.remove(o)
+                    else:
+                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + Game_World.SCREEN_WIDTH):
+                            self._sprite_group.add(o)
                 # Päivitetään peliobjektit
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
                 if self._prev_tick == 0.0:
