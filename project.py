@@ -267,6 +267,12 @@ class Enemy(pg.sprite.Sprite):
         collideable.add(self)
         enemies.add(self)
 
+    def obj_update(self, x :int, y :int):
+        self._pos_x -= x
+        self._pos_y -= y
+        temp = (self._pos_x, self._pos_y)
+        self.rect.center = temp
+
     def update(self):
         """ Decrease i-frames and move towards player. Move back until there's no collision. """
         if self.invulnerable > 0:
