@@ -1,9 +1,12 @@
 import Log
 import Window
+import Game_World
+import project
 from pygame import event
 from pygame import key
 from pygame import time
 from pygame import locals
+from pygame import sprite
 from enum import Enum
 
 
@@ -28,7 +31,17 @@ class Game:
         self._wnd = Window.Window()
         self._state = Game_State(2)
         self._is_Running = True
-
+        # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
+        self._none_player_sprites = []
+        # Luodaan pelaaja- ja karttaobjektit
+        self._player = project.Player()
+        self._map = Game_World.Map(self._player)
+        # Luodaan sprite.Group spritejen renderöintiin
+        self._sprite_group = sprite.Group()
+        self._sprite_group.add(self._player)
+        
+    def add_sprite(self, new_sprite) -> None:
+        self._none_player_sprites.append(new_sprite)
 
     def game_loop(self):
         while self._is_Running:
@@ -41,7 +54,6 @@ class Game:
                     keys = key.get_pressed()
                     if keys[locals.K_ESCAPE]:
                         self._state = Game_State.PAUSED
-                Log.Log_Info(self._delta_time) # DEBUG
                 # Päivitetään peliobjektit
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
                 if self._prev_tick == 0.0:
