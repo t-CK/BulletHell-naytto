@@ -1,5 +1,6 @@
 import sys, math, random, pygame as pg
 from pygame.locals import *
+import Game_World
 
 pg.init()
 
@@ -61,6 +62,11 @@ class Player(pg.sprite.Sprite):
         self.xp_to_next_level = 100
         self.invulnerable = 0
         self.pickup_distance = DEFAULT_PICKUP_DISTANCE * SPRITE_SCALE
+        
+        # Asetetaan pelaajan X ja Y sijainnit kartalla
+        # Pelaaja asetetaan aloittamaan keskeltä pelialuetta
+        self._map_x = Game_World.MAP_WIDTH / 2
+        self._map_y = Game_World.MAP_HEIGHT / 2
 
         all_sprites.add(self)
 
@@ -141,6 +147,12 @@ class Player(pg.sprite.Sprite):
         self.xp -= self.xp_to_next_level
         self.xp_to_next_level *= 1.5
         self.lvl += 1
+        
+    def get_x(self):
+        return self._map_x
+    
+    def get_y(self):
+        return self._map_y
 
 
 class Bullet(pg.sprite.Sprite):
