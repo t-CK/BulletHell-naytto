@@ -91,6 +91,12 @@ class Game:
                 pass
             # Tyhjennetään ikkunan sisältö ja renderöidään taustaväri
             self._wnd.draw_background()
+            # Renderöidään peliobjektit/valikot
+            if self._state == Game_State.RUNNING:
+                self._sprite_group.draw(self._wnd._wnd)
+            elif self._state == Game_State.PAUSED:
+                # Valikon renderöinti
+                pass
 
 
     def get_delta_time(self) -> float:
