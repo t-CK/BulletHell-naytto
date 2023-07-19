@@ -1,7 +1,10 @@
 import Log
 import Window
 import Game_World
-import project
+
+import project # DEBUG
+
+from Player import Player
 from pygame import event
 from pygame import key
 from pygame import time
