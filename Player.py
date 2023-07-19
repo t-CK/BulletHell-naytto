@@ -58,6 +58,8 @@ class Player(pg.sprite.Sprite):
             self.rect.move_ip(self.speed * value, 0)
             while pg.sprite.spritecollideany(self, collideable):
                 self.rect.move_ip(-1, 0)
+        # Päivitetään pelaajan sijainti kartalla
+        self._map_x += value
     
     def move_y(self, value):
         if value < 0:
@@ -68,6 +70,8 @@ class Player(pg.sprite.Sprite):
             self.rect.move_ip(0, self.speed * value)
             while pg.sprite.spritecollideany(self, collideable):
                 self.rect.move_ip(0, -1)
+        # Päivitetään pelaajan sijainti kartalla
+        self._map_y += value
 
     def update(self):
         """ Decreases i-frames, also checks for movement input for now. """
