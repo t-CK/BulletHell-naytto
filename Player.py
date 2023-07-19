@@ -48,29 +48,51 @@ class Player(pg.sprite.Sprite):
 
         all_sprites.add(self)
 
+    def move_x(self, value):
+        if value > 0:
+            self.rect.move_ip(-self.speed * value, 0)
+            while pg.sprite.spritecollideany(self, collideable):
+                self.rect.move_ip(1, 0)
+        
+        else:
+            self.rect.move_ip(self.speed * value, 0)
+            while pg.sprite.spritecollideany(self, collideable):
+                self.rect.move_ip(-1, 0)
+    
+    def move_y(self, value):
+        if value < 0:
+            self.rect.move_ip(0, -self.speed * value)
+            while pg.sprite.spritecollideany(self, collideable):
+                self.rect.move_ip(0, 1)
+        else:
+            self.rect.move_ip(0, self.speed * value)
+            while pg.sprite.spritecollideany(self, collideable):
+                self.rect.move_ip(0, -1)
+
     def update(self):
         """ Decreases i-frames, also checks for movement input for now. """
         if self.invulnerable > 0:
             self.invulnerable -= 1
         # Keyboard input for player movement with arrows & WASD
         if not mouse_movement_enabled:
-            keys = pg.key.get_pressed()
-            if keys[K_UP] or keys[K_w]:
-                self.rect.move_ip(0, -self.speed)
-                while pg.sprite.spritecollideany(self, collideable):
-                    self.rect.move_ip(0, 1)
-            if keys[K_RIGHT] or keys[K_d]:
-                self.rect.move_ip(self.speed, 0)
-                while pg.sprite.spritecollideany(self, collideable):
-                    self.rect.move_ip(-1, 0)
-            if keys[K_DOWN] or keys[K_s]:
-                self.rect.move_ip(0, self.speed)
-                while pg.sprite.spritecollideany(self, collideable):
-                    self.rect.move_ip(0, -1)
-            if keys[K_LEFT] or keys[K_a]:
-                self.rect.move_ip(-self.speed, 0)
-                while pg.sprite.spritecollideany(self, collideable):
-                    self.rect.move_ip(1, 0)
+            pass
+#            keys = pg.key.get_pressed()
+#            if keys[K_UP] or keys[K_w]:
+#                self.rect.move_ip(0, -self.speed)
+#                while pg.sprite.spritecollideany(self, collideable):
+#                    self.rect.move_ip(0, 1)
+#            if keys[K_RIGHT] or keys[K_d]:
+#                self.rect.move_ip(self.speed, 0)
+#                while pg.sprite.spritecollideany(self, collideable):
+#                    self.rect.move_ip(-1, 0)
+#            if keys[K_DOWN] or keys[K_s]:
+#                self.rect.move_ip(0, self.speed)
+#                while pg.sprite.spritecollideany(self, collideable):
+#                    self.rect.move_ip(0, -1)
+#            if keys[K_LEFT] or keys[K_a]:
+#                self.rect.move_ip(-self.speed, 0)
+#                while pg.sprite.spritecollideany(self, collideable):
+#                    self.rect.move_ip(1, 0)
 
         # Mouse movement testing
         else:
