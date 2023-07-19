@@ -1,10 +1,11 @@
 import Log
 import Window
 import Game_World
+import Player
+import input
 
 import project # DEBUG
 
-from Player import Player
 from pygame import event
 from pygame import key
 from pygame import time
@@ -24,7 +25,7 @@ class Game:
     _is_Running :bool
     _state :Game_State
     _game_objects = []
-#    _wnd :Window.Window
+    _wnd :Window.Window
     # delta time
     _prev_tick = 0
     _delta_time = 0.0
@@ -32,12 +33,13 @@ class Game:
 
     def __init__(self) -> None:
         self._wnd = Window.Window()
-        self._state = Game_State(2)
+        self._state = Game_State(0)
         self._is_Running = True
         # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
         self._none_player_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
-        self._player = project.Player()
+        self._player = Player.Player()
+        self._input = input.Input(self, self._player)
         self._map = Game_World.Map(self._player)
         # Luodaan camera(tuple) muuttuja, jolle annetaan arvoksi pelaajan X ja Y sijainnit
         self._camera = self._map.Update()
@@ -47,21 +49,20 @@ class Game:
         
     def add_sprite(self, new_sprite) -> None:
         self._none_player_sprites.append(new_sprite)
+        
+    def update_game(self, x_val, y_val):
+        """Päivittää pelin spritet vastaamaan pelaajan uutta sijaintia ikkunassa"""
+        Log.Log_Info(f"update_game kutsuttu {x_val} : {y_val}")
+#        for ent in self._none_player_sprites:
+#            ent.update_map(x_val, y_val)
 
     def game_loop(self):
         while self._is_Running:
             # Jos peli on käynnissä, ajetaan loopin ensimmäinen if lohko
             if self._state == Game_State.RUNNING:
                 # Otetaan vastaan input
-                # Inputtiin lisättävä kaikkien spritejen päivittäminen: input(movement) * -1
+                self._input.get_input()
                 
-                # Päivitetään kartta/kamera
-                # Pitää siirtää omaan luokkaansa
-                if event.peek():
-                    e = event.poll()
-                    keys = key.get_pressed()
-                    if keys[locals.K_ESCAPE]:
-                        self._state = Game_State.PAUSED
                 # Päivitetään kamera
                 self._camera = self._map.Update()
                 # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
@@ -96,7 +97,7 @@ class Game:
             self._wnd.draw_background()
             # Renderöidään peliobjektit/valikot
             if self._state == Game_State.RUNNING:
-                self._sprite_group.draw(self._wnd._wnd)
+                self._wnd.draw_objects(self._sprite_group)
             elif self._state == Game_State.PAUSED:
                 # Valikon renderöinti
                 pass
