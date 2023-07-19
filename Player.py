@@ -1,8 +1,18 @@
 import sys, math, random, pygame as pg
 from pygame.locals import *
 import Game_World
+from Log import *
 
 from project import *
+
+SPRITE_SCALE = 2
+
+FPS = 60
+DEFAULT_SPEED = 4
+DEFAULT_PICKUP_DISTANCE = 30
+
+STARTING_SPAWN_TIME = 200
+
 
 class Player(pg.sprite.Sprite):
     """ Player sprite object with various attributes
@@ -27,6 +37,7 @@ class Player(pg.sprite.Sprite):
             self.surf = pg.image.load("player.png").convert()
             self.surf.set_colorkey((0,255,0))
         except FileNotFoundError:
+            Log_Warning("Cannot load image into Player")
             self.surf = pg.Surface([15, 20])
             self.surf.fill((255,255,255))
         if (SPRITE_SCALE > 1):
