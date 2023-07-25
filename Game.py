@@ -25,6 +25,7 @@ class Game:
     # delta time
     _prev_tick = 0
     _delta_time = 0.0
+    _ui_list = []
 
 
     def __init__(self) -> None:
@@ -41,10 +42,16 @@ class Game:
         # Luodaan sprite.Group spritejen renderöintiin
         self._sprite_group = sprite.Group()
         self._sprite_group.add(self._player)
+        self._ui_group = sprite.Group()
         
     def add_sprite(self, new_sprite) -> None:
         """Lisää spriten groupiin"""
         self._none_player_sprites.append(new_sprite)
+        
+    def add_ui(self, ui):
+        """Lisää uuden UI -elementin peliin"""
+        self._ui_list.append(ui) # Lisätään uusi UI -elementti UI-listaan
+        self._ui_group.add(ui)   # Lisätään uusi UI -elementti pygamen sprite groupiin
 
     def game_loop(self):
         while self._is_Running:
@@ -95,6 +102,7 @@ class Game:
             # Renderöidään peliobjektit/valikot
             if self._state == Game_State.RUNNING:
                 self._sprite_group.draw(self._wnd._wnd)
+                self._ui_group.draw(self._wnd._wnd)
             elif self._state == Game_State.PAUSED:
                 # Valikon renderöinti
                 pass
