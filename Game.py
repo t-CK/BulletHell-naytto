@@ -43,6 +43,7 @@ class Game:
         self._sprite_group.add(self._player)
         
     def add_sprite(self, new_sprite) -> None:
+        """Lisää spriten groupiin"""
         self._none_player_sprites.append(new_sprite)
 
     def game_loop(self):
