@@ -11,11 +11,11 @@ from pygame import key
 from pygame import time
 from pygame import locals
 from pygame import sprite
-from enum import Enum
+from enum import Enum, IntEnum
 
 
 # Enum luokka pelin statuksen seuraamista varten
-class Game_State(Enum):
+class Game_State(IntEnum):
     RUNNING = 0
     PAUSED = 1
     IN_MENU = 2
@@ -57,7 +57,7 @@ class Game:
 #            ent.update_map(x_val, y_val)
 
     def game_loop(self):
-        while self._is_Running:
+        while self._is_Running:         
             # Jos peli on käynnissä, ajetaan loopin ensimmäinen if lohko
             if self._state == Game_State.RUNNING:
                 # Otetaan vastaan input
@@ -93,7 +93,10 @@ class Game:
             self._wnd.draw_background()
             # Renderöidään peliobjektit/valikot
             if self._state == Game_State.RUNNING:
+                # DEBUG
                 Log.Log_Info(self._delta_time)
+                Log.Log_Info("RUNNING")
+                
  #               self._wnd.draw_objects(self._sprite_group)
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
                 if self._prev_tick == 0.0:
@@ -102,8 +105,19 @@ class Game:
                     self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
             elif self._state == Game_State.PAUSED:
                 # Valikon renderöinti
-                pass
+                # Tarkastetaan käyttäjän syöte
+                self._input.get_input()
+                # Asetetaan edellisen tickin arvoksi 0
+                self._prev_tick = 0.0
 
+    def toggle_state(self, state :Game_State):
+        if self._state == state:
+            if state == Game_State.PAUSED:
+                self._state = Game_State.RUNNING
+        else: self._state = state
+        
+    def get_state(self) -> Game_State:
+        return self._state
 
     def get_delta_time(self) -> float:
         return self._delta_time

@@ -5,6 +5,7 @@ import Player
 import Game
 from Log import *
 from sys import exit
+from enum import Enum
 
 class Input:
     _p1 :Player # Referenssi pelaajaobjektiin
@@ -25,10 +26,11 @@ class Input:
                 exit()
             # Vaihdetaan Game_State PAUSED ja RUNNING välillä painettaessa esc -näppäintä
             if keys[locals.K_ESCAPE]:
-                if self._game._state == Game.Game_State.RUNNING:
-                    self._game._state = Game.Game_State.PAUSED
-                elif self._game._state == Game.Game_State.PAUSED:
-                    self._game._state = Game.Game_State.RUNNING
+                self._game.toggle_state(Game.Game_State.PAUSED)
+                #if self._game.get_state() == Game.Game_State.RUNNING:
+                #    self._game._state = Game.Game_State.PAUSED
+                #elif self._game.get_state() == Game.Game_State.PAUSED:
+                #    self._game._state = Game.Game_State.RUNNING
             # Pelaajan liikutus
             if keys[locals.K_UP]:
                 Log_Info(f"Player move Y : {-1}")
