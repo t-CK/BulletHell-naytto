@@ -2,6 +2,7 @@ import sys
 from pygame import display
 from pygame import surface
 from pygame import locals
+from pygame import sprite
 from Log import *
 
 # Peliin tarvitaan vain yksi ikkuna kerrallaan, joten Window luokka voi olla staattinen (luokan muuttujat takllennetaan class variableina)
@@ -26,7 +27,8 @@ class Window:
         self._wnd.fill(color=(255,0,255))
         display.flip() # DEBUG
     
-    def draw_object(self, img :surface.Surface):
-        self._wnd.blit(img, (0, 0))
+    def draw_objects(self, sprites :sprite.Group):
+        self._wnd.fill(color=(255,0,255))
+        sprites.draw(self._wnd)
         display.flip()
 
