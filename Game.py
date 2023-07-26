@@ -33,7 +33,7 @@ class Game:
 
     def __init__(self) -> None:
         self._wnd = Window.Window()
-        self._state = Game_State(0)
+        self._state = Game_State.RUNNING
         self._is_Running = True
         # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
         self._none_player_sprites = []
@@ -74,11 +74,7 @@ class Game:
                         if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + Game_World.SCREEN_WIDTH):
                             self._sprite_group.add(o)
                 # Päivitetään peliobjektit
-                # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
-                if self._prev_tick == 0.0:
-                    self._prev_tick = time.get_ticks()
-                else:
-                    self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
+                
 
             # Jos game_state on PAUSE, asetetaan prev_tick arvoksi 0, tarkastetaan onko escape näppäintä painettu pausen lopettamiseksi
             # ja hypätään loopin alkuun
@@ -97,7 +93,13 @@ class Game:
             self._wnd.draw_background()
             # Renderöidään peliobjektit/valikot
             if self._state == Game_State.RUNNING:
-                self._wnd.draw_objects(self._sprite_group)
+                Log.Log_Info(self._delta_time)
+ #               self._wnd.draw_objects(self._sprite_group)
+                # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
+                if self._prev_tick == 0.0:
+                    self._prev_tick = time.get_ticks()
+                else:
+                    self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
             elif self._state == Game_State.PAUSED:
                 # Valikon renderöinti
                 pass
