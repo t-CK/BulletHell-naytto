@@ -53,18 +53,15 @@ class Game:
         """Lisää spriten groupiin"""
         self._none_player_sprites.append(new_sprite)
         
-<<<<<<< HEAD
     def add_ui(self, ui):
         """Lisää uuden UI -elementin peliin"""
         self._ui_list.append(ui) # Lisätään uusi UI -elementti UI-listaan
         self._ui_group.add(ui)   # Lisätään uusi UI -elementti pygamen sprite groupiin
-=======
     def update_game(self, x_val, y_val):
         """Päivittää pelin spritet vastaamaan pelaajan uutta sijaintia ikkunassa"""
         Log.Log_Info(f"update_game kutsuttu {x_val} : {y_val}")
 #        for ent in self._none_player_sprites:
 #            ent.update_map(x_val, y_val)
->>>>>>> input
 
     def game_loop(self):
         while self._is_Running:         
@@ -89,12 +86,11 @@ class Game:
             # Jos game_state on PAUSE, asetetaan prev_tick arvoksi 0, tarkastetaan onko escape näppäintä painettu pausen lopettamiseksi
             # ja hypätään loopin alkuun
             elif self._state == Game_State.PAUSED:
-                self._prev_tick = 0.0
                 if event.peek():
                     keys = key.get_pressed()
                     e = event.poll()
                     if keys[locals.K_ESCAPE]:
-                        self._state = 0
+                        self._state = Game_State.RUNNING
                 Log.Log_Info("PAUSED")
             # Renderöidään menu tarvittaessa
             elif self._state == Game_State.IN_MENU:
@@ -103,10 +99,8 @@ class Game:
             self._wnd.draw_background()
             # Renderöidään peliobjektit/valikot
             if self._state == Game_State.RUNNING:
-<<<<<<< HEAD
-                self._sprite_group.draw(self._wnd._wnd)
+                #self._sprite_group.draw(self._wnd._wnd)
                 self._ui_group.draw(self._wnd._wnd)
-=======
                 # DEBUG
                 Log.Log_Info(self._delta_time)
                 Log.Log_Info("RUNNING")
@@ -117,13 +111,14 @@ class Game:
                     self._prev_tick = time.get_ticks()
                 else:
                     self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
->>>>>>> input
+                    self._prev_tick = time.get_ticks()
             elif self._state == Game_State.PAUSED:
                 # Valikon renderöinti
                 # Tarkastetaan käyttäjän syöte
                 self._input.get_input()
-                # Asetetaan edellisen tickin arvoksi 0
-                self._prev_tick = 0.0
+                # Asetetaan delta_time arvoksi 0 ja päivitetään self._prev_tick
+                self._delta_time = 0.0
+                self._prev_tick = time.get_ticks()
 
     def toggle_state(self, state :Game_State):
         if self._state == state:
