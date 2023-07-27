@@ -16,9 +16,6 @@ class Counter:
         Kutsutaan aina tapon yhteydessä"""
         self._kill_count +=1
     
-    def timer_update(self):
-        pass
-    
     def get_kill_count(self):
         return self._kill_count
     
