@@ -3,6 +3,7 @@ import Window
 import Game_World
 import Player
 import input
+from Counter import Counter
 
 import project # DEBUG
 
@@ -40,6 +41,10 @@ class Game:
         self._none_player_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
         self._player = Player.Player()
+        # Aloitettaessa uusi peli, luodaan counter -objekti default parametreillä
+        self._counters = Counter()
+        # TODO: Counterin luonti ladattaessa peli tallennuksesta
+        
         self._input = input.Input(self, self._player)
         self._map = Game_World.Map(self._player)
         # Luodaan camera(tuple) muuttuja, jolle annetaan arvoksi pelaajan X ja Y sijainnit
