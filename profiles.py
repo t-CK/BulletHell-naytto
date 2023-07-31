@@ -2,7 +2,7 @@ from Player import Player
 from Game import Game
 import sqlite3
 
-class data_base:
+class Profiles:
     _table = "profiles"
     _conn :sqlite3.Connection
     _cursor :sqlite3.Cursor
