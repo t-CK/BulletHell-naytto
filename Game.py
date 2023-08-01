@@ -5,14 +5,17 @@ import Player
 import input
 from Counter import Counter
 
-import project # DEBUG
-
 from pygame import event
 from pygame import key
 from pygame import time
 from pygame import locals
 from pygame import sprite
+from pygame import display
 from enum import Enum, IntEnum
+
+from variables import *
+
+import enemy
 
 
 # Enum luokka pelin statuksen seuraamista varten
@@ -38,11 +41,11 @@ class Game:
         self._state = Game_State.RUNNING
         self._is_Running = True
         # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
-        self._none_player_sprites = []
+        self._non_player_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
         self._player = Player.Player()
         # Aloitettaessa uusi peli, luodaan counter -objekti default parametreillä
-        self._counters = Counter()
+        self._counters = Counter(self._wnd)
         # TODO: Counterin luonti ladattaessa peli tallennuksesta
         
         self._input = input.Input(self, self._player)
@@ -56,7 +59,7 @@ class Game:
         
     def add_sprite(self, new_sprite) -> None:
         """Lisää spriten groupiin"""
-        self._none_player_sprites.append(new_sprite)
+        self._non_player_sprites.append(new_sprite)
         
     def add_ui(self, ui):
         """Lisää uuden UI -elementin peliin"""
@@ -65,10 +68,11 @@ class Game:
     def update_game(self, x_val, y_val):
         """Päivittää pelin spritet vastaamaan pelaajan uutta sijaintia ikkunassa"""
         Log.Log_Info(f"update_game kutsuttu {x_val} : {y_val}")
-#        for ent in self._none_player_sprites:
+#        for ent in self._non_player_sprites:
 #            ent.update_map(x_val, y_val)
 
     def game_loop(self):
+        self.add_sprite(enemy.Enemy((100,100))) #DEBUG
         while self._is_Running:         
             # Jos peli on käynnissä, ajetaan loopin ensimmäinen if lohko
             if self._state == Game_State.RUNNING:
@@ -78,12 +82,12 @@ class Game:
                 # Päivitetään kamera
                 self._camera = self._map.Update()
                 # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
-                for o in self._none_player_sprites:
+                for o in self._non_player_sprites:
                     if self._sprite_group.has(o):
-                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + Game_World.SCREEN_WIDTH):
+                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + WIDTH):
                             self._sprite_group.remove(o)
                     else:
-                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + Game_World.SCREEN_WIDTH):
+                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + WIDTH):
                             self._sprite_group.add(o)
                 # Päivitetään peliobjektit
                 
@@ -104,8 +108,11 @@ class Game:
             self._wnd.draw_background()
             # Renderöidään peliobjektit/valikot
             if self._state == Game_State.RUNNING:
-                #self._sprite_group.draw(self._wnd._wnd)
-                self._ui_group.draw(self._wnd._wnd)
+                for sprite in self._sprite_group:
+                    self._wnd._wnd.blit(sprite.surf, sprite.rect)
+                for sprite in self._ui_group:
+                    self._wnd._wnd.blit(sprite.surf, sprite.rect)
+                display.flip()
                 # DEBUG
                 Log.Log_Info(self._delta_time)
                 Log.Log_Info("RUNNING")

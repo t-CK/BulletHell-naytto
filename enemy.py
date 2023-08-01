@@ -1,4 +1,6 @@
 import pygame as pg
+from variables import *
+import Game_World
 
 class Enemy(pg.sprite.Sprite):
     """ Rudimentary enemy sprite object (probably gonna move much of this to a child class)
@@ -33,6 +35,8 @@ class Enemy(pg.sprite.Sprite):
         self.speed = speed
         self.dmg = dmg
         self.invulnerable = 0
+        self._map_x = Game_World.MAP_WIDTH / 2
+        self._map_y = Game_World.MAP_HEIGHT / 2
 
         all_sprites.add(self)
         collideable.add(self)
@@ -88,6 +92,12 @@ class Enemy(pg.sprite.Sprite):
         self.invulnerable = 5
         if self.hp <= 0:
             self.death()
+            
+    def get_x(self):
+        return self._map_x
+    
+    def get_y(self):
+        return self._map_y
 
     def death(self):
         """ Drop XP and die """

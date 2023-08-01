@@ -25,7 +25,6 @@ class Window:
         
     def draw_background(self):
         self._wnd.fill(color=(255,0,255))
-        display.flip() # DEBUG
     
     def draw_objects(self, sprites :sprite.Group):
         self._wnd.fill(color=(255,0,255))

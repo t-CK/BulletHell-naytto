@@ -34,17 +34,17 @@ class Input:
             # Pelaajan liikutus
             if keys[locals.K_UP]:
                 Log_Info(f"Player move Y : {-1}")
-                self._p1.move_y(-1 * self._game.get_delta_time())
+                self._p1.move_y(-1)
                 self._game.update_game(0, 1)
-            if keys[locals.K_DOWN]:
+            elif keys[locals.K_DOWN]:
                 Log_Info(f"Player move Y : {1}")
-                self._p1.move_y(1 * self._game.get_delta_time())
+                self._p1.move_y(1)
                 self._game.update_game(0, -1)
             if keys[locals.K_RIGHT]:
                 Log_Info(f"Player move X : {1}")
-                self._p1.move_x(1 * self._game.get_delta_time())
+                self._p1.move_x(1)
                 self._game.update_game(-1, 0)
             elif keys[locals.K_LEFT]:
                 Log_Info(f"Player move X : {-1}")
-                self._p1.move_x(-1 * self._game.get_delta_time())
+                self._p1.move_x(-1)
                 self._game.update_game(1, 0)
