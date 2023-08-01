@@ -2,17 +2,7 @@ import sys, math, random, pygame as pg
 from pygame.locals import *
 import Game_World
 from Log import *
-
-from project import *
-
-SPRITE_SCALE = 2
-
-FPS = 60
-DEFAULT_SPEED = 4
-DEFAULT_PICKUP_DISTANCE = 30
-
-STARTING_SPAWN_TIME = 200
-
+from variables import *
 
 class Player(pg.sprite.Sprite):
     """ Player sprite object with various attributes
