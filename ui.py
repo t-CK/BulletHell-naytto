@@ -1,10 +1,9 @@
 from pygame import sprite, Surface, display
-from Game import Game
-from Player import Player
+import Player
 
 class Ui(sprite.Sprite):
     """ UI parent class (pretty unnecessary at the moment) """
-    def __init__(self, game :Game):
+    def __init__(self, game):
         super().__init__()
         
         self._wnd_size = game._wnd._wnd.get_size() # Tallennetaan ikkunan kokotiedot luokan muuttujiin
@@ -21,7 +20,7 @@ class Ui_Bar(Ui):
     Variables value and value_max are methods, that are called to get the
     current and maximum values for the bar's length
     """
-    def __init__(self, game :Game, value = None, value_max = None):
+    def __init__(self, game, value = None, value_max = None):
         super().__init__()        
         self.bar_height = self._wnd_size[1]//100
         self.bar_max_width = self.wnd_size[0]//2
@@ -44,7 +43,7 @@ class Ui_Bar(Ui):
 
 class Ui_Bar_XP(Ui_Bar):
     """ XP Bar on top of screen, purplish """
-    def __init__(self, game :Game, player :Player):
+    def __init__(self, player):
         super().__init__(player.get_xp, player.get_xp_to_next_level)
         self._player = player
         self.rect.topleft = (self._wnd_size[0]//4, self._wnd_size[1]//19 + 7)
