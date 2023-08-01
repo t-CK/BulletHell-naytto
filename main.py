@@ -88,9 +88,6 @@ def render_screen():
         for sprite in group:
             SCREEN.blit(sprite.surf, sprite.rect)
     SCREEN.blit(game.player.surf, game.player.rect)
-    # Tiedän että ui piirretään näin kahdesti, koska on myös all_spritesissa,
-    # mutta jostain syystä ei piirry, jos ei ole siinäkin.
-    # Toistetaan se anyway, jotta ui on päällimmäisenä.
     for sprite in ui_group:
         SCREEN.blit(sprite.surf, sprite.rect)
     pg.display.flip()
