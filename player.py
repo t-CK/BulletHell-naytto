@@ -44,8 +44,8 @@ class Player(pg.sprite.Sprite):
         
         # Asetetaan pelaajan X ja Y sijainnit kartalla
         # Pelaaja asetetaan aloittamaan keskeltä pelialuetta
-        self._map_x = Game_World.MAP_WIDTH / 2
-        self._map_y = Game_World.MAP_HEIGHT / 2
+        self._map_x = WIDTH / 2
+        self._map_y = HEIGHT / 2
 
     def update(self):
         """ Decreases i-frames, also checks for movement input for now. """
