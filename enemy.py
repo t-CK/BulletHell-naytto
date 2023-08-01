@@ -1,3 +1,5 @@
+import pygame as pg
+
 class Enemy(pg.sprite.Sprite):
     """ Rudimentary enemy sprite object (probably gonna move much of this to a child class)
     

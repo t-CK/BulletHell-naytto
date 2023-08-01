@@ -1,3 +1,5 @@
+import pygame as pg
+
 class World(pg.sprite.Sprite):
     """ World object such as an obstacle or a special area of the level
 

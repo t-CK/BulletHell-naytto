@@ -1,3 +1,5 @@
+import pygame as pg
+
 class Xp(pg.sprite.Sprite):
     """ XP globe dying enemies drop """
     # Testinä huvin vuoks lista väreistä xp-arvon mukaan:
