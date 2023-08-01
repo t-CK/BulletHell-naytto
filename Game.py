@@ -117,6 +117,7 @@ class Game:
                 else:
                     self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
                     self._prev_tick = time.get_ticks()
+                self._counters.timer_update(self._delta_time)
             elif self._state == Game_State.PAUSED:
                 # Valikon renderöinti
                 # Tarkastetaan käyttäjän syöte
