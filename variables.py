@@ -1,7 +1,7 @@
 import pygame as pg
 
-SCREEN_SIZE = (WIDTH, HEIGHT) = 1000, 700
-SCREEN = pg.display.set_mode(SCREEN_SIZE)
+# SCREEN_SIZE = (WIDTH, HEIGHT) = pg.display.get_window_size()
+# SCREEN = pg.display.set_mode(SCREEN_SIZE)
 
 SPRITE_SCALE = 2
 

@@ -84,10 +84,10 @@ class Game:
                 # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
                 for o in self._non_player_sprites:
                     if self._sprite_group.has(o):
-                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + WIDTH):
+                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + self._wnd.WIDTH):
                             self._sprite_group.remove(o)
                     else:
-                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + WIDTH):
+                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + self._wnd.WIDTH):
                             self._sprite_group.add(o)
                 # Päivitetään peliobjektit
                 
