@@ -29,7 +29,7 @@ class Player(pg.sprite.Sprite):
         except FileNotFoundError:
             self.surf = pg.Surface([15, 20])
             self.surf.fill((255,255,255))
-        if not SPRITE_SCALE == 1 or SPRITE_SCALE == 0:
+        if not SPRITE_SCALE == 1:
             self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
         self.rect = self.surf.get_rect()
         self.hp = hp
