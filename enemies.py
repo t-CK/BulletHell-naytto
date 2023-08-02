@@ -28,7 +28,7 @@ class Enemy(pg.sprite.Sprite):
             self.surf = pg.Surface([12, 19])
             self.color = (60,255,60)
             self.surf.fill(self.color)
-        if not SPRITE_SCALE == 1:
+        if not (SPRITE_SCALE == 1 or SPRITE_SCALE == 0):
             self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
 
         self.rect = self.surf.get_rect()
