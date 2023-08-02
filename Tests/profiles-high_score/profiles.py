@@ -1,6 +1,6 @@
-from Player import Player
-from Game import Game
 import sqlite3
+from multipledispatch import dispatch
+from os.path import exists
 
 class Profiles:
     _table = "profiles"
@@ -48,19 +48,52 @@ class High_Score:
     
     def __init__(self):
         self._conn = sqlite3.connect("score.db")
-        self._cursor = self._conn.cursor()
-        self._cursor.execute(f"""CREATE TABLE IF NOT EXISTS {self._table}(
-            pname TEXT PRIMARY KEY,
-            kills INTEGER,
-            time REAL,
-            );""")
-#        self._cursor.execute("CREATE TABLE profiles (ID INTEGER, level INTEGER, xp INTEGER, kills INTEGER, time REAL, pname TEXT)")
-        print(self._conn.total_changes)
-        
-    def get_scores(self):
-        pass
+        try:
+            self._cursor = self._conn.cursor()
+            self._cursor.execute(f"""CREATE TABLE IF NOT EXISTS '{self._table}'(
+                pname TEXT PRIMARY KEY,
+                score INTEGER,
+                kills INTEGER,
+                time REAL
+                );""")
+        except sqlite3.Error as e:
+            (f"sqlite3 error : {e}\n__init__")
     
-    def add_score(self, pname :str, kills :int, time :float) -> None:
+    def get_scores(self):
+        """Hakee tietokannasta kaikki pelaajatiedot ja pisteet"""
+        try:
+            data = self._cursor.execute(f"SELECT * FROM {self._table}")
+        except sqlite3.Error as e:
+            print(f"sqlite error : {e}")
+            data = None
+        return data.fetchone()
+        
+    def get_score(self, pName :str) -> list:
+        """Hakee tietokannasta halutun pelaajan pisteet ja tiedot\n
+        Ottaa parametrina halutun pelaajan nimimerkin"""
+        try:
+            data = self._cursor.execute(f"SELECT * FROM {self._table} WHERE pname = '{pName}'")
+        except sqlite3.Error as e:
+            print(f"sqlite error : {e}")
+            data = None
+        return data.fetchone()
+        
+    
+    def add_score(self, pName :str, kills :int, score, time :float) -> None:
         """Lisää pelaajan pisteet tietokantaan
-        Ottaa parametreinä pelaajan nimimerkin, tappojen määrän ja peliajan"""
+        Parametrit:
+        pelaaja : str
+        pisteet : int
+        tapot   : int
+        aika    : float"""
+        self._cursor.execute(f"""INSERT INTO {self._table} (pname, score, kills, time)
+                             VALUES ('{pName}', {score}, {kills}, {time});""")
+        
+    def update_score(self, pName :str, score :int, kills :int, time :float):
+        """Päivittää halutun pelaajan tulokset tietokantaan
+        Parametrit:
+        pelaaja : str
+        pisteet : int
+        tapot   : int
+        aika    : float"""
         pass
