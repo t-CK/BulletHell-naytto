@@ -43,7 +43,7 @@ class Game:
         # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
         self._non_player_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
-        self._player = Player.Player()
+        self._player = Player.Player(self._wnd.get_size())
         # Aloitettaessa uusi peli, luodaan counter -objekti default parametreillä
         self._counters = Counter(self._wnd)
         # TODO: Counterin luonti ladattaessa peli tallennuksesta
@@ -67,9 +67,9 @@ class Game:
         self._ui_group.add(ui)   # Lisätään uusi UI -elementti pygamen sprite groupiin
     def update_game(self, x_val, y_val):
         """Päivittää pelin spritet vastaamaan pelaajan uutta sijaintia ikkunassa"""
-        Log.Log_Info(f"update_game kutsuttu {x_val} : {y_val}")
-#        for ent in self._non_player_sprites:
-#            ent.update_map(x_val, y_val)
+        for ent in self._non_player_sprites:
+            ent.obj_update(x_val, y_val)
+        self._camera = self._map.Update()
 
     def game_loop(self):
         self.add_sprite(enemy.Enemy((100,100))) #DEBUG
@@ -82,12 +82,14 @@ class Game:
                 # Päivitetään kamera
                 self._camera = self._map.Update()
                 # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
+                wnd_temp = self._wnd.get_size()
                 for o in self._non_player_sprites:
                     if self._sprite_group.has(o):
-                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + self._wnd.WIDTH):
+                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + wnd_temp[0]):
+                            temp = o.get_x
                             self._sprite_group.remove(o)
                     else:
-                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + self._wnd.WIDTH):
+                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + wnd_temp[0]):
                             self._sprite_group.add(o)
                 # Päivitetään peliobjektit
                 
@@ -144,6 +146,7 @@ class Game:
     def get_delta_time(self) -> float:
         return self._delta_time
     
+
 
 if __name__ == "__main__":
     game=Game()

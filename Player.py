@@ -21,7 +21,7 @@ class Player(pg.sprite.Sprite):
             (levelup() is, at least for now, called by Xp.pickup() and not Player)
         
     """
-    def __init__(self, hp = 20):
+    def __init__(self, wnd_size :tuple, hp = 20):
         super().__init__()
         try:
             self.surf = pg.image.load("player.png").convert()
@@ -42,10 +42,14 @@ class Player(pg.sprite.Sprite):
         self.invulnerable = 0
         self.pickup_distance = DEFAULT_PICKUP_DISTANCE * SPRITE_SCALE
         
+        self._window_size = wnd_size
+        
         # Asetetaan pelaajan X ja Y sijainnit kartalla
         # Pelaaja asetetaan aloittamaan keskeltä pelialuetta
         self._map_x = Game_World.MAP_WIDTH / 2
         self._map_y = Game_World.MAP_HEIGHT / 2
+        
+        self.rect.center = [self._window_size[0] / 2, self._window_size[1] / 2]
 
         all_sprites.add(self)
 
@@ -61,6 +65,7 @@ class Player(pg.sprite.Sprite):
                 self.rect.move_ip(-1, 0)
         # Päivitetään pelaajan sijainti kartalla
         self._map_x += value
+        self.rect.center = [Game_World.MAP_WIDTH / 2, Game_World.MAP_HEIGHT / 2]
     
     def move_y(self, value):
         if value < 0:
@@ -73,6 +78,7 @@ class Player(pg.sprite.Sprite):
                 self.rect.move_ip(0, -1)
         # Päivitetään pelaajan sijainti kartalla
         self._map_y += value
+        self.rect.center = [Game_World.MAP_WIDTH / 2, Game_World.MAP_HEIGHT / 2]
 
     def update(self):
         """ Decreases i-frames, also checks for movement input for now. """

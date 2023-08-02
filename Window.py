@@ -31,4 +31,6 @@ class Window:
         self._wnd.fill(color=(255,0,255))
         sprites.draw(self._wnd)
         display.flip()
-
+        
+    def get_size(self) -> tuple:
+        return self._wnd.get_size()

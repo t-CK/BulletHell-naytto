@@ -35,17 +35,20 @@ class Enemy(pg.sprite.Sprite):
         self.speed = speed
         self.dmg = dmg
         self.invulnerable = 0
-        self._map_x = Game_World.MAP_WIDTH / 2
-        self._map_y = Game_World.MAP_HEIGHT / 2
+        #self._map_x = Game_World.MAP_WIDTH / 2
+        #self._map_y = Game_World.MAP_HEIGHT / 2
+        
+        self._map_x = position[0]
+        self._map_y = position[1]
 
         all_sprites.add(self)
         collideable.add(self)
         enemies.add(self)
 
     def obj_update(self, x :int, y :int):
-        self._pos_x -= x
-        self._pos_y -= y
-        temp = (self._pos_x, self._pos_y)
+        self._map_x += x
+        self._map_y += y
+        temp = (self._map_x, self._map_y)
         self.rect.center = temp
 
     def update(self):
