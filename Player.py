@@ -30,7 +30,7 @@ class Player(pg.sprite.Sprite):
             Log_Warning("Cannot load image into Player")
             self.surf = pg.Surface([15, 20])
             self.surf.fill((255,255,255))
-        if (SPRITE_SCALE > 1):
+        if not SPRITE_SCALE == 1:
             self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
         self.rect = self.surf.get_rect()
         self.hp = hp
