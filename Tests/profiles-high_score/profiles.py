@@ -56,3 +56,11 @@ class High_Score:
             );""")
 #        self._cursor.execute("CREATE TABLE profiles (ID INTEGER, level INTEGER, xp INTEGER, kills INTEGER, time REAL, pname TEXT)")
         print(self._conn.total_changes)
+        
+    def get_scores(self):
+        pass
+    
+    def add_score(self, pname :str, kills :int, time :float) -> None:
+        """Lisää pelaajan pisteet tietokantaan
+        Ottaa parametreinä pelaajan nimimerkin, tappojen määrän ja peliajan"""
+        pass
