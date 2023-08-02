@@ -4,6 +4,7 @@
 *.user
 *.pyproj
 *.pyproj.orig
+*.db
 
 # folders
 .vs/
