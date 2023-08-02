@@ -40,3 +40,19 @@ class Profiles:
         """Poistaa tietokannasta pelaajaprofiilin\n
         Ottaa parametrina poistettavan profiilin ID:n"""
         pass
+
+class High_Score:
+    _table = "score"
+    _conn :sqlite3.Connection
+    _cursor :sqlite3.Cursor
+    
+    def __init__(self):
+        self._conn = sqlite3.connect("score.db")
+        self._cursor = self._conn.cursor()
+        self._cursor.execute(f"""CREATE TABLE IF NOT EXISTS {self._table}(
+            pname TEXT PRIMARY KEY,
+            kills INTEGER,
+            time REAL,
+            );""")
+#        self._cursor.execute("CREATE TABLE profiles (ID INTEGER, level INTEGER, xp INTEGER, kills INTEGER, time REAL, pname TEXT)")
+        print(self._conn.total_changes)
