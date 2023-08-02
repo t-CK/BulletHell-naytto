@@ -66,7 +66,7 @@ class High_Score:
         except sqlite3.Error as e:
             print(f"sqlite error : {e}")
             data = None
-        return data.fetchone()
+        return data.fetchall()
         
     def get_score(self, pName :str) -> list:
         """Hakee tietokannasta halutun pelaajan pisteet ja tiedot\n
@@ -86,8 +86,12 @@ class High_Score:
         pisteet : int
         tapot   : int
         aika    : float"""
+        for name in  self._cursor.execute(f"""SELECT pname FROM {self._table}"""):
+            if name[0] == pName:
+                self.update_score(pName, score, kills, time)
         self._cursor.execute(f"""INSERT INTO {self._table} (pname, score, kills, time)
                              VALUES ('{pName}', {score}, {kills}, {time});""")
+        self._conn.commit()
         
     def update_score(self, pName :str, score :int, kills :int, time :float):
         """Päivittää halutun pelaajan tulokset tietokantaan
