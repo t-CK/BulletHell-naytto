@@ -65,7 +65,7 @@ class Player(pg.sprite.Sprite):
                 self.rect.move_ip(-1, 0)
         # Päivitetään pelaajan sijainti kartalla
         self._map_x += value
-        self.rect.center = [Game_World.MAP_WIDTH / 2, Game_World.MAP_HEIGHT / 2]
+        self.rect.center = [self._window_size[0] / 2, self._window_size[1] / 2]
     
     def move_y(self, value):
         if value < 0:
