@@ -106,3 +106,6 @@ class Enemy(pg.sprite.Sprite):
         """ Drop XP and die """
         Xp(*self.rect.center, random.randrange(len(Xp._colors))+1)
         self.kill()
+        
+    def debug_print(self):
+        print("Render enemy")
