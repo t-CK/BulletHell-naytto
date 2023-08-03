@@ -48,8 +48,7 @@ class Enemy(pg.sprite.Sprite):
     def obj_update(self, x :int, y :int):
         self._map_x += x
         self._map_y += y
-        temp = (self._map_x, self._map_y)
-        self.rect.center = temp
+        self.rect.center = (self._map_x, self._map_y)
 
     def update(self):
         """ Decrease i-frames and move towards player. Move back until there's no collision. """
