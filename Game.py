@@ -83,18 +83,16 @@ class Game:
                 
                 # Päivitetään kamera
                 self._camera = self._map.Update()
+                
                 # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
-                for o in self._non_player_sprites:
-                    if self._sprite_group.has(o):
-#                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + wnd_temp[0]):
-#                        if (o.get_x() < self._camera[0] - self._wnd_size[0] /2 or o.get_x()) > (self._camera[0] + self._wnd_size[0]/2):
-                        if o.get_x() < self._camera[0] or o.get_x() > self._camera[0] + self._wnd_size[0]:
-                            self._sprite_group.remove(o)
+                for obj in self._non_player_sprites:
+                    if self._sprite_group.has(obj):
+                        if obj.get_x() < self._camera[0]-self._wnd_size[0]-self._wnd_size[0]/2 or obj.get_x() > self._camera[0] +self._wnd_size[0]:
+                            self._sprite_group.remove(obj)
                     else:
-#                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + wnd_temp[0]):
-#                        if (o.get_x() >= self._camera[0] - self._wnd_size[0] / 2) and (o.get_x() <= self._camera[0] + self._wnd_size[0]):
-                        if o.get_x() >= self._camera[0] and o.get_x() <= self._camera[0] + self._wnd_size[0]:
-                            self._sprite_group.add(o)
+                        if obj.get_x() >= self._camera[0] -self._wnd_size[0]*1.35 and obj.get_x() <= self._camera[0]-self._wnd_size[0]:
+                            self._sprite_group.add(obj)
+                            
                 # Päivitetään peliobjektit
                 
 
@@ -119,6 +117,9 @@ class Game:
                     # DEBUG
                     try:
                         sprite.debug_print()
+                        # DEBUG
+                        Log.Log_Error(f"Camera {self._camera}")
+                        Log.Log_Warning(f"Enemy {sprite.get_x()} : {sprite.get_y()}")
                     except:
                         pass
 
@@ -126,9 +127,6 @@ class Game:
                 for sprite in self._ui_group:
                     self._wnd._wnd.blit(sprite.surf, sprite.rect)
                 display.flip()
-                # DEBUG
-                Log.Log_Info(self._delta_time)
-                Log.Log_Info("RUNNING")
                 
  #               self._wnd.draw_objects(self._sprite_group)
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
