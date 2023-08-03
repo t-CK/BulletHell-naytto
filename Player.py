@@ -78,7 +78,7 @@ class Player(pg.sprite.Sprite):
                 self.rect.move_ip(0, -1)
         # Päivitetään pelaajan sijainti kartalla
         self._map_y += value
-        self.rect.center = [Game_World.MAP_WIDTH / 2, Game_World.MAP_HEIGHT / 2]
+        self.rect.center = [self._window_size[0] / 2, self._window_size[1] / 2]
 
     def update(self):
         """ Decreases i-frames, also checks for movement input for now. """
