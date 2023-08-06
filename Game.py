@@ -30,6 +30,7 @@ class Game:
     _state :Game_State
     _game_objects = []
     _wnd :Window.Window
+    _wnd_size :tuple
     # delta time
     _prev_tick = 0
     _delta_time = 0.0
@@ -43,7 +44,8 @@ class Game:
         # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
         self._non_player_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
-        self._player = Player.Player(self._wnd.get_size())
+        self._wnd_size = self._wnd.get_size()
+        self._player = Player.Player(self._wnd_size)
         # Aloitettaessa uusi peli, luodaan counter -objekti default parametreillä
         self._counters = Counter(self._wnd)
         # TODO: Counterin luonti ladattaessa peli tallennuksesta
@@ -81,16 +83,16 @@ class Game:
                 
                 # Päivitetään kamera
                 self._camera = self._map.Update()
+                
                 # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
-                wnd_temp = self._wnd.get_size()
-                for o in self._non_player_sprites:
-                    if self._sprite_group.has(o):
-                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + wnd_temp[0]):
-                            temp = o.get_x
-                            self._sprite_group.remove(o)
+                for obj in self._non_player_sprites:
+                    if self._sprite_group.has(obj):
+                        if obj.get_x() < self._camera[0]-self._wnd_size[0]-self._wnd_size[0]/2 or obj.get_x() > self._camera[0] +self._wnd_size[0]:
+                            self._sprite_group.remove(obj)
                     else:
-                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + wnd_temp[0]):
-                            self._sprite_group.add(o)
+                        if obj.get_x() >= self._camera[0] -self._wnd_size[0]*1.35 and obj.get_x() <= self._camera[0]-self._wnd_size[0]:
+                            self._sprite_group.add(obj)
+                            
                 # Päivitetään peliobjektit
                 
 
@@ -111,13 +113,20 @@ class Game:
             # Renderöidään peliobjektit/valikot
             if self._state == Game_State.RUNNING:
                 for sprite in self._sprite_group:
+
+                    # DEBUG
+                    try:
+                        sprite.debug_print()
+                        # DEBUG
+                        Log.Log_Error(f"Camera {self._camera}")
+                        Log.Log_Warning(f"Enemy {sprite.get_x()} : {sprite.get_y()}")
+                    except:
+                        pass
+
                     self._wnd._wnd.blit(sprite.surf, sprite.rect)
                 for sprite in self._ui_group:
                     self._wnd._wnd.blit(sprite.surf, sprite.rect)
                 display.flip()
-                # DEBUG
-                Log.Log_Info(self._delta_time)
-                Log.Log_Info("RUNNING")
                 
  #               self._wnd.draw_objects(self._sprite_group)
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan

@@ -30,7 +30,7 @@ class Player(pg.sprite.Sprite):
             Log_Warning("Cannot load image into Player")
             self.surf = pg.Surface([15, 20])
             self.surf.fill((255,255,255))
-        if (SPRITE_SCALE > 1):
+        if not (SPRITE_SCALE == 1 or SPRITE_SCALE == 0):
             self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
         self.rect = self.surf.get_rect()
         self.hp = hp
@@ -65,7 +65,7 @@ class Player(pg.sprite.Sprite):
                 self.rect.move_ip(-1, 0)
         # Päivitetään pelaajan sijainti kartalla
         self._map_x += value
-        self.rect.center = [Game_World.MAP_WIDTH / 2, Game_World.MAP_HEIGHT / 2]
+        self.rect.center = [self._window_size[0] / 2, self._window_size[1] / 2]
     
     def move_y(self, value):
         if value < 0:
@@ -78,7 +78,7 @@ class Player(pg.sprite.Sprite):
                 self.rect.move_ip(0, -1)
         # Päivitetään pelaajan sijainti kartalla
         self._map_y += value
-        self.rect.center = [Game_World.MAP_WIDTH / 2, Game_World.MAP_HEIGHT / 2]
+        self.rect.center = [self._window_size[0] / 2, self._window_size[1] / 2]
 
     def update(self):
         """ Decreases i-frames, also checks for movement input for now. """

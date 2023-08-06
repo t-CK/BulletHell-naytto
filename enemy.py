@@ -25,7 +25,7 @@ class Enemy(pg.sprite.Sprite):
             self.surf = pg.Surface([12, 19])
             self.color = (60,255,60)
             self.surf.fill(self.color)
-        if not SPRITE_SCALE == 1:
+        if not (SPRITE_SCALE == 1 or SPRITE_SCALE == 0):
             self.surf = pg.transform.scale_by(self.surf, SPRITE_SCALE)
 
         self.rect = self.surf.get_rect()
@@ -35,21 +35,20 @@ class Enemy(pg.sprite.Sprite):
         self.speed = speed
         self.dmg = dmg
         self.invulnerable = 0
-        #self._map_x = Game_World.MAP_WIDTH / 2
-        #self._map_y = Game_World.MAP_HEIGHT / 2
-        
         self._map_x = position[0]
         self._map_y = position[1]
+        
+        self._render_x = position[0]
+        self._render_y = position[1]
 
         all_sprites.add(self)
         collideable.add(self)
         enemies.add(self)
 
     def obj_update(self, x :int, y :int):
-        self._map_x += x
-        self._map_y += y
-        temp = (self._map_x, self._map_y)
-        self.rect.center = temp
+        self._render_x += x
+        self._render_y += y
+        self.rect.center = (self._render_x, self._render_y)
 
     def update(self):
         """ Decrease i-frames and move towards player. Move back until there's no collision. """
@@ -97,12 +96,15 @@ class Enemy(pg.sprite.Sprite):
             self.death()
             
     def get_x(self):
-        return self._map_x
+        return self._render_x
     
     def get_y(self):
-        return self._map_y
+        return self._render_y
 
     def death(self):
         """ Drop XP and die """
         Xp(*self.rect.center, random.randrange(len(Xp._colors))+1)
         self.kill()
+        
+    def debug_print(self):
+        print("Render enemy")
