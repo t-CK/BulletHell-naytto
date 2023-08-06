@@ -1,6 +1,7 @@
 import pygame as pg
 from os import listdir
 from pathlib import Path
+from pygame.locals import *
 
 heads = []
 bodies = []
@@ -93,6 +94,11 @@ def get_sprite_by_names(head, body, leg) -> (pg.image, list):
         if l.name == leg:
             correct_leg = l
     return combine_sprite(correct_head, correct_body, correct_leg)
+    
+def get_sprite_by_index(head, body, leg) -> (pg.image, list):
+    """ Returns a tuple of (Sprite standing still, Generator for walk animation)
+        from the parts' list indexes """
+    return combine_sprite(heads[head], bodies[body], legs[leg])
 
 def combine_sprite(head, body, leg) -> (pg.image, list):
     """ Returns a tuple of (Sprite standing still, Generator for walk animation) """
@@ -107,7 +113,6 @@ def combine_sprite(head, body, leg) -> (pg.image, list):
         image.blit(next(leg.animation), (0, image.get_height() - leg.image.get_height()))
         animation.append(image)
     return (still_image, get_anim_generator(None, animation))
-
 
 
 for image in listdir(f"{working_directory}\image_generator\heads"):
@@ -130,17 +135,46 @@ for dir in listdir(f"{working_directory}\image_generator\legs"):
 
 
 if __name__ == "__main__":
+    """ Just a quick UI for demonstration purposes """
     SCREEN_SIZE = (WIDTH, HEIGHT) = 1000, 700
     SCREEN = pg.display.set_mode(SCREEN_SIZE)
-    SCREEN.fill((60,60,80))
-    sprite = get_sprite_by_names("test2", "test2", "test1")
-    sprite2 = get_sprite_by_names("test2", "test1", "test1")
-    sprite3 = get_sprite_by_names("test1", "test1", "test2")
-    for n in range(10):
-        SCREEN.blit(next(sprite[1]), (0,n*50))
-    for n in range(10):
-        SCREEN.blit(next(sprite2[1]), (50,n*50))
-    for n in range(10):
-        SCREEN.blit(next(sprite3[1]), (100,n*50))
-    pg.display.flip()
-    input()
+    sprite = pg.sprite.Sprite()
+    sprite.image = None
+    clock = pg.time.Clock()
+    head_cursor, body_cursor, leg_cursor = (0, 0, 0)
+    redraw_needed = True
+    
+    while True:
+        SCREEN.fill((60,60,80))
+        if redraw_needed:
+            image_preview, animator = combine_sprite(heads[head_cursor], bodies[body_cursor], legs[leg_cursor])
+            redraw_needed = False
+        if not sprite.image:
+            sprite.image = image_preview
+            sprite.rect = sprite.image.get_rect()
+            sprite.rect.center = (WIDTH//2, HEIGHT//2)
+        else:
+            sprite.image = next(animator)
+        sprite.image = pg.transform.scale_by(sprite.image, 4)
+        
+        SCREEN.blit(sprite.image, sprite.rect)
+        pg.display.flip()
+        clock.tick(7)
+        
+        for event in pg.event.get():
+            if event.type == KEYDOWN:
+                redraw_needed = True
+                if event.key == K_ESCAPE:
+                    pg.quit()
+                elif event.key == K_q:
+                    head_cursor = head_cursor - 1 if head_cursor > 0 else len(heads)-1
+                elif event.key == K_e:
+                    head_cursor = head_cursor + 1 if head_cursor < len(heads)-1 else 0
+                elif event.key == K_a:
+                    body_cursor = body_cursor - 1 if body_cursor > 0 else len(bodies)-1
+                elif event.key == K_d:
+                    body_cursor = body_cursor + 1 if body_cursor < len(bodies)-1 else 0
+                elif event.key == K_z:
+                    leg_cursor = leg_cursor - 1 if leg_cursor > 0 else len(legs)-1
+                elif event.key == K_c:
+                    leg_cursor = leg_cursor + 1 if leg_cursor < len(legs)-1 else 0
