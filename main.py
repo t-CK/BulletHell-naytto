@@ -61,7 +61,7 @@ class App():
             elif spawn_side == 3: # Left
                 x = -30
                 y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
-            enemies.Enemy(self, (x,y))
+            enemies.Enemy_Follow(self, (x,y))
             self.spawn_timer = max(10, STARTING_SPAWN_TIME - self.ticks//100)
 
     def check_collisions(self):
@@ -83,7 +83,7 @@ class App():
         SCREEN.fill((20,20,150))
         # for sprite in all_sprites:
             # SCREEN.blit(sprite.surf, sprite.rect)
-        for group in (items_group, enemy_group, world_group, bullet_group):
+        for group in (items_group, world_group, enemy_group, bullet_group):
             for sprite in group:
                 SCREEN.blit(sprite.surf, sprite.rect)
         SCREEN.blit(self.player.surf, self.player.rect)

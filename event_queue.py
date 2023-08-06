@@ -29,7 +29,8 @@ def process_event_queue(game):
             5 = Despawn bullets
             6 = Spawn bullet towards closest enemy
             7 = Spawn bullet towards random enemy
-            9 = Spawn enemy
+            8 = Spawn (WIP) sine bullet
+            9 = Spawn (WIP) sine enemy
             0 = Kill enemies
         """
         global prev
@@ -49,7 +50,7 @@ def process_event_queue(game):
                 for sprite in bullet_group:
                     sprite.kill()
             elif event.key == K_9:
-                enemies.Enemy(game)
+                enemies.Enemy_Sine(game)
             elif event.key == K_0:
                 for sprite in enemy_group:
                     sprite.death()
@@ -57,3 +58,5 @@ def process_event_queue(game):
             weapons.Bullet_Line(game)
         if pg.key.get_pressed()[K_7]:
             weapons.Bullet_Line(game, misc.get_random_enemy())
+        if pg.key.get_pressed()[K_8]:
+            weapons.Bullet_Sine(game)

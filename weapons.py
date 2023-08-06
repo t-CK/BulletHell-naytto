@@ -36,7 +36,7 @@ class Bullet_Line(Bullet):
                 self.target = target
             else:
                 self.target = target.rect.center
-        else:
+        else: # If target is None, try to default to closest enemy
             try:
                 self.target = misc.get_closest_enemy(self.origin).rect.center
             except AttributeError:  # Raised if there are no enemies
@@ -75,3 +75,17 @@ class Bullet_Orbit(Bullet):
             self.center = (self.centerx, self.centery) = self.center_object.rect.center
         self.rect.center = (self.centerx + self.radius*math.sin(self.game.ticks/self.speed),
                             self.centery + self.radius*math.cos(self.game.ticks/self.speed))
+                            
+class Bullet_Sine(Bullet_Line):
+    """ Bullet_Line but wavy """
+    def __init__(self, game, target: tuple or Sprite = None, origin: tuple or Sprite = None, ttl = 60, speed = 10,
+                 wave_scale = 1):
+        super().__init__(game, target, origin, ttl, speed)
+        self.wave_scale = wave_scale
+        
+    def update(self):
+        super().update()
+        self.offset = [coordinate * self.wave_scale * math.sin(self.game.ticks/10) for coordinate in 
+                       (-self.step[1], self.step[0])]
+        self.rect.move_ip(self.offset)
+        
