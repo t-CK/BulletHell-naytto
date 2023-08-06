@@ -22,7 +22,7 @@ class Enemy(pg.sprite.Sprite):
         self.game = game
         self.player = game.player
         try:
-            self.surf = pg.image.load("enemy.png").convert()
+            self.surf = pg.image.load("./images/enemy.png").convert()
             self.surf.set_colorkey((0,255,0))
             self.color = None
         except FileNotFoundError:

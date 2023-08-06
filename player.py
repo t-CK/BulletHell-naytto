@@ -23,7 +23,7 @@ class Player(pg.sprite.Sprite):
     def __init__(self, hp = 20):
         super().__init__()
         try:
-            self.surf = pg.image.load("player.png").convert()
+            self.surf = pg.image.load("./images/player.png").convert()
             # self.surf, self.animation = get_sprite_by_names("test2", "test1", "test1")
             self.surf.set_colorkey((0,255,0))
         except FileNotFoundError:
