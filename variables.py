@@ -14,8 +14,8 @@ STARTING_SPAWN_TIME = 200
 clock = pg.time.Clock()
 
 all_sprites = pg.sprite.Group()
-bullets = pg.sprite.Group()
-enemies = pg.sprite.Group()
+bullet_group = pg.sprite.Group()
+enemy_group = pg.sprite.Group()
 collideable = pg.sprite.Group()
 ui_group = pg.sprite.Group()
 

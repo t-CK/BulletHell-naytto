@@ -15,7 +15,7 @@ from enum import Enum, IntEnum
 
 from variables import *
 
-import enemy
+import enemies
 
 
 # Enum luokka pelin statuksen seuraamista varten
@@ -74,7 +74,7 @@ class Game:
         self._camera = self._map.Update()
 
     def game_loop(self):
-        self.add_sprite(enemy.Enemy((100,100))) #DEBUG
+        self.add_sprite(enemies.Enemy(self,(100,100))) #DEBUG
         while self._is_Running:         
             # Jos peli on käynnissä, ajetaan loopin ensimmäinen if lohko
             if self._state == Game_State.RUNNING:

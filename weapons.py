@@ -1,11 +1,10 @@
 from pygame import sprite, surface
 from Player import Player
-from Game import Game
 import math
 
 class Bullet(sprite.Sprite):
     """ Parent class for bullets """
-    def __init__(self, game :Game):
+    def __init__(self, game):
         super().__init__()
         self.surf = surface.Surface([5,5])
         self.surf.fill((200,0,0))
@@ -16,7 +15,7 @@ class Bullet(sprite.Sprite):
         # Lisätään Bullet pelin spriteihin
         game.add_sprite(self)
         
-        bullets.add(self)
+        bullet_group.add(self)
 
 class Bullet_Line(Bullet):
     """ Bullet flying in a straight line
@@ -62,7 +61,7 @@ class Bullet_Orbit(Bullet):
     Speed-attribute affects time to do a complete circle, thus the velocity of
     the projectile depends on radius as well as speed.
     """
-    def __init__(self, game :Game, center_object: tuple or sprite.Sprite = (0,0), radius = 100, speed = 30):
+    def __init__(self, game, center_object: tuple or sprite.Sprite = (0,0), radius = 100, speed = 30):
         super().__init__()
         self._game = game
         self.radius = radius
