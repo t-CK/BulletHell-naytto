@@ -1,6 +1,6 @@
 import pygame as pg
 import random
-import pickup
+import pickups
 from variables import *
 
 class Enemy(pg.sprite.Sprite):
@@ -90,5 +90,5 @@ class Enemy(pg.sprite.Sprite):
 
     def death(self):
         """ Drop XP and die """
-        pickup.Xp(self.game, *self.rect.center, random.randrange(len(pickup.Xp._colors))+1)
+        pickups.Xp(self.game, *self.rect.center, random.randrange(len(pickups.Xp._colors))+1)
         self.kill()

@@ -1,6 +1,6 @@
 import math, random
 import pygame as pg
-import weapons, enemies, world, pickup, ui, event_queue, misc
+import weapons, enemies, world, pickups, ui, event_queue, misc
 from player import Player
 from variables import *
 
