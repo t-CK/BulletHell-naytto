@@ -90,7 +90,7 @@ class Game:
                         if obj.get_x() < self._camera[0]-self._wnd_size[0]-self._wnd_size[0]/2 or obj.get_x() > self._camera[0] +self._wnd_size[0]:
                             self._sprite_group.remove(obj)
                     else:
-                        if obj.get_x() >= self._camera[0] -self._wnd_size[0]*1.35 and obj.get_x() <= self._camera[0]-self._wnd_size[0]:
+                        if obj.get_x() >= self._camera[0] -self._wnd_size[0]*1.35 and obj.get_x() <= self._camera[0]+self._wnd_size[0]:
                             self._sprite_group.add(obj)
                             
                 # Päivitetään peliobjektit
