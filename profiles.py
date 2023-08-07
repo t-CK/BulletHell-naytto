@@ -49,6 +49,7 @@ class High_Score:
     def __init__(self):
         self._conn = sqlite3.connect("score.db")
         try:
+            # Yritetään luoda uusi tietokanta
             self._cursor = self._conn.cursor()
             self._cursor.execute(f"""CREATE TABLE IF NOT EXISTS '{self._table}'(
                 pname TEXT PRIMARY KEY,
@@ -57,25 +58,30 @@ class High_Score:
                 time REAL
                 );""")
         except sqlite3.Error as e:
-            (f"sqlite3 error : {e}\n__init__")
+            # Virheen sattuessa tulostetaan virheilmoitus
+            print(f"sqlite3 error : {e}")
     
     def get_scores(self):
         """Hakee tietokannasta kaikki pelaajatiedot ja pisteet"""
         try:
+            # Haetaan kaikki tiedot tietokannasta
             data = self._cursor.execute(f"SELECT * FROM {self._table}")
         except sqlite3.Error as e:
+            # Virheen sattuessa tulostetaan virheilmoitus ja palautetaan None
             print(f"sqlite error : {e}")
-            data = None
+            return None
         return data.fetchall()
         
     def get_score(self, pName :str) -> list:
         """Hakee tietokannasta halutun pelaajan pisteet ja tiedot\n
         Ottaa parametrina halutun pelaajan nimimerkin"""
         try:
+            # Haetaan haluttuun nimeen liitetyt tiedot tietokannasta ja palautetaan ne
             data = self._cursor.execute(f"SELECT * FROM {self._table} WHERE pname = '{pName}'")
         except sqlite3.Error as e:
+            # Virheen sattuessa tulostetaan virheilmoitus ja palautetaan None
             print(f"sqlite error : {e}")
-            data = None
+            return None
         return data.fetchone()
         
     
@@ -86,11 +92,15 @@ class High_Score:
         pisteet : int
         tapot   : int
         aika    : float"""
+        # Tarkastetaan ettei haluttua nimeä vielä löydy tietokannasta
         for name in  self._cursor.execute(f"""SELECT pname FROM {self._table}"""):
             if name[0] == pName:
                 self.update_score(pName, score, kills, time)
+                # Jos nimi löytyy jo, palataan
+                return
         self._cursor.execute(f"""INSERT INTO {self._table} (pname, score, kills, time)
                              VALUES ('{pName}', {score}, {kills}, {time});""")
+        # Tallennetaan tehdyt muutokset tietokantaan
         self._conn.commit()
         
     def update_score(self, pName :str, score :int, kills :int, time :float):
@@ -100,6 +110,11 @@ class High_Score:
         pisteet : int
         tapot   : int
         aika    : float"""
-        self._cursor.execute(f"""UPDATE {self._table} SET score = {score}, kills = {kills}, time = {time}
-                             WHERE pname == '{pName}'""")
-        self._conn.commit()
+        try:
+            # Haetaan haluttuun nimeen liitetyt tiedot tietokannasta ja päivitetään ne
+            self._cursor.execute(f"""UPDATE {self._table} SET score = {score}, kills = {kills}, time = {time}
+                                 WHERE pname == '{pName}'""")
+            self._conn.commit()
+        # Virheen sattuessa tulostetaan virheen tiedot
+        except sqlite3.Error as e:
+            print(f"Sqlite error: {e}")
