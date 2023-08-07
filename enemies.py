@@ -78,6 +78,7 @@ class Enemy(pg.sprite.Sprite):
         self.kill()
         
 class Enemy_Follow(Enemy):
+    """ Enemy moving in a straight line towards player """
     def __init__(self, game, position = (0,0), hp = 3, speed = 1, dmg = 1, solid = True):
         super().__init__(game, position, hp, speed, dmg, solid)
         
@@ -101,9 +102,11 @@ class Enemy_Follow(Enemy):
             self.rect.move_ip(0,-self.speed)
             while self.solid and pg.sprite.spritecollideany(self, collideable):
                 self.rect.move_ip(0,1)
-        collideable.add(self)
+        if self.solid:
+            collideable.add(self)
     
 class Enemy_Sine(Enemy_Follow):
+    """ Enemy_Follow but with some added circling """
     def __init__(self, game, position = (0,0), hp = 3, speed = 1, dmg = 1, solid = False):
         super().__init__(game, position, hp, speed, dmg, solid)
         

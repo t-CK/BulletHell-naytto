@@ -152,4 +152,6 @@ class Player(pg.sprite.Sprite):
     def player_death(self):
         """ Very much temporary, just playing around for now """
         self.surf = pg.transform.rotate(self.surf, 90)
+        for sprite in bullet_group:
+            sprite.kill()
         self.update = lambda *_: None

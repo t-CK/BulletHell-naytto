@@ -40,10 +40,12 @@ def process_event_queue(game):
             elif event.key == K_2:
                 player.speed += 1
             elif event.key == K_3:
-                prev = weapons.Bullet_Orbit(game, player, random.randrange(20,200), random.randrange(10,50))
+                offset = (random.randrange(0,4), random.randrange(0,4), random.randrange(0,20), random.randrange(0,20))
+                prev = weapons.Bullet_Orbit(game, player, random.randrange(20,150), random.randrange(10,50), -1, offset)
             elif event.key == K_4:
                 try:
-                    weapons.Bullet_Orbit(game, prev, random.randrange(5,30), random.randrange(1,50))
+                    offset = (random.randrange(0,4), random.randrange(0,4), random.randrange(0,20), random.randrange(0,20))
+                    weapons.Bullet_Orbit(game, prev, random.randrange(5,30), random.randrange(1,50), -1, offset)
                 except:
                     pass
             elif event.key == K_5:

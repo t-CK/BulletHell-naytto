@@ -74,15 +74,13 @@ class App():
         for sprite in enemy_group:
             if pg.sprite.spritecollideany(sprite, bullet_group):
                 sprite.damage()
-            if pg.sprite.collide_rect_ratio(1.01)(sprite, self.player):
+            if pg.sprite.collide_rect_ratio(1.01)(sprite, self.player) and self.player.hp > 0:
                 self.player.damage(sprite.dmg)
                 sprite.damage()
     
     def render_screen(self):
         """ Fill background, blit sprites and flip() the screen """
         SCREEN.fill((20,20,150))
-        # for sprite in all_sprites:
-            # SCREEN.blit(sprite.surf, sprite.rect)
         for group in (items_group, world_group, enemy_group, bullet_group):
             for sprite in group:
                 SCREEN.blit(sprite.surf, sprite.rect)

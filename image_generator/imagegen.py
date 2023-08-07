@@ -65,6 +65,8 @@ def get_anim_generator(path: str, filelist: list, sequence = None):
     to be the non-walking Sprite image)
     """
     animation_frames = []
+    if len(filelist) == 1:
+        sequence = (0,)
     if not sequence:
         sequence = tuple(range(1, len(filelist)))
     for f in filelist:
@@ -136,7 +138,7 @@ for dir in listdir(f"{working_directory}\image_generator\legs"):
 
 if __name__ == "__main__":
     """ Just a quick UI for demonstration purposes """
-    SCREEN_SIZE = (WIDTH, HEIGHT) = 1000, 700
+    SCREEN_SIZE = (WIDTH, HEIGHT) = 640, 480
     SCREEN = pg.display.set_mode(SCREEN_SIZE)
     sprite = pg.sprite.Sprite()
     sprite.image = None
@@ -151,13 +153,39 @@ if __name__ == "__main__":
             redraw_needed = False
         if not sprite.image:
             sprite.image = image_preview
-            sprite.rect = sprite.image.get_rect()
-            sprite.rect.center = (WIDTH//2, HEIGHT//2)
         else:
             sprite.image = next(animator)
         sprite.image = pg.transform.scale_by(sprite.image, 4)
+        sprite.rect = sprite.image.get_rect()
+        sprite.rect.center = (WIDTH//2, HEIGHT//2)
         
         SCREEN.blit(sprite.image, sprite.rect)
+        
+        text_surfs = []
+        for _ in ("Q", "A", "Z"):
+            text_surfs.append(pg.font.Font(None,50).render(_, False, (0,0,0)))
+        for _ in range(len(text_surfs)):
+            text_rect = text_surfs[_].get_rect()
+            text_rect.center = (sprite.rect.left - 50, sprite.rect.top + _*80)
+            SCREEN.blit(text_surfs[_], text_rect)
+        
+        text_surfs = []        
+        for _ in ("E", "D", "C"):
+            text_surfs.append(pg.font.Font(None,50).render(_, False, (0,0,0)))
+        for _ in range(len(text_surfs)):
+            text_rect = text_surfs[_].get_rect()
+            text_rect.center = (sprite.rect.right + 50, sprite.rect.top + _*80)
+            SCREEN.blit(text_surfs[_], text_rect)
+
+        text_surfs = []
+        partnames = (heads[head_cursor].name.title(), bodies[body_cursor].name.title(), legs[leg_cursor].name.title())
+        for _ in partnames:
+            text_surfs.append(pg.font.Font(None,30).render(_, False, (0,0,0)))
+        for _ in range(len(text_surfs)):
+            text_rect = text_surfs[_].get_rect()
+            text_rect.center = (sprite.rect.x - 90 + (_*150), sprite.rect.bottom + 80)
+            SCREEN.blit(text_surfs[_], text_rect)
+            
         pg.display.flip()
         clock.tick(7)
         

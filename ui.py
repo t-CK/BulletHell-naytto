@@ -1,8 +1,5 @@
 import pygame as pg
-import __main__
 from variables import *
-
-# player = __main__.player
 
 class Ui(pg.sprite.Sprite):
     """ UI parent class (pretty unnecessary at the moment) """
