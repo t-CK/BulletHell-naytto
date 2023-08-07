@@ -55,21 +55,29 @@ class Player(pg.sprite.Sprite):
         if not self.mouse_movement_enabled:
             keys = pg.key.get_pressed()
             if keys[K_UP] or keys[K_w]:
-                self.rect.move_ip(0, -self.speed)
+                # self.rect.move_ip(0, -self.speed)
+                self.move_player(0, -self.speed)
                 while pg.sprite.spritecollideany(self, collideable):
-                    self.rect.move_ip(0, 1)
+                    # self.rect.move_ip(0, 1)
+                    self.move_player(0, 1)
             if keys[K_RIGHT] or keys[K_d]:
-                self.rect.move_ip(self.speed, 0)
+                # self.rect.move_ip(self.speed, 0)
+                self.move_player(self.speed, 0)
                 while pg.sprite.spritecollideany(self, collideable):
-                    self.rect.move_ip(-1, 0)
+                    # self.rect.move_ip(-1, 0)
+                    self.move_player(-1, 0)
             if keys[K_DOWN] or keys[K_s]:
-                self.rect.move_ip(0, self.speed)
+                # self.rect.move_ip(0, self.speed)
+                self.move_player(0, self.speed)
                 while pg.sprite.spritecollideany(self, collideable):
-                    self.rect.move_ip(0, -1)
+                    # self.rect.move_ip(0, -1)
+                    self.move_player(0, -1)
             if keys[K_LEFT] or keys[K_a]:
-                self.rect.move_ip(-self.speed, 0)
+                # self.rect.move_ip(-self.speed, 0)
+                self.move_player(-self.speed, 0)
                 while pg.sprite.spritecollideany(self, collideable):
-                    self.rect.move_ip(1, 0)
+                    # self.rect.move_ip(1, 0)
+                    self.move_player(1, 0)
 
         # Mouse movement testing
         else:
@@ -155,3 +163,8 @@ class Player(pg.sprite.Sprite):
         for sprite in bullet_group:
             sprite.kill()
         self.update = lambda *_: None
+
+    def move_player(self, x, y):
+        """ Move every non-player (and non-ui) sprite (-x,-y) pixels """
+        for sprite in all_sprites:
+            sprite.rect.move_ip(-x,-y)
