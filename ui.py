@@ -9,7 +9,6 @@ class Ui(pg.sprite.Sprite):
         self.surf.fill((0, 255, 0))
         self.surf.set_colorkey((0, 255, 0))
 
-        all_sprites.add(self)
         ui_group.add(self)
 
 class Ui_Bar(Ui):

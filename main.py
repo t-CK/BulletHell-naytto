@@ -5,6 +5,7 @@ from player import Player
 from variables import *
 
 pg.init()
+SCREEN = pg.display.set_mode(SCREEN_SIZE)
 
 class App():
     def __init__(self):
@@ -12,6 +13,7 @@ class App():
         self.player = Player()
         self.initialize_game()
         self.spawn_timer = STARTING_SPAWN_TIME
+        self.clock = pg.time.Clock()
 
     def initialize_game(self):
         """ Initialize player, Ui etc. """
@@ -27,9 +29,10 @@ class App():
             self.spawn_enemies()
             self.player.update()
             all_sprites.update()
+            ui_group.update()
             self.check_collisions()
             self.render_screen()
-            clock.tick(FPS)
+            self.clock.tick(FPS)
             self.ticks += 1
 
     def initialize_level(self):
@@ -38,7 +41,7 @@ class App():
             size = (size_x, size_y) = (random.randint(20*SPRITE_SCALE, 100*SPRITE_SCALE),
                                        random.randint(20*SPRITE_SCALE, 100*SPRITE_SCALE))
             position = (pos_x, pos_y) = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
-            while abs(pos_x - WIDTH) < 50 + size_x or abs(pos_y - HEIGHT) < 50 + size_y:
+            while abs(pos_x - self.player.rect.centerx) < 50 + size_x and abs(pos_y - self.player.rect.centery) < 50 + size_y:
                 position = (pos_x, pos_y) = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
             world.World(*position, *size)
     

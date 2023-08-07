@@ -1,11 +1,9 @@
 import Log
 import Window
 import Game_World
-import Player
+import player
 import input
 from Counter import Counter
-
-import project # DEBUG
 
 from pygame import event
 from pygame import key
@@ -40,7 +38,7 @@ class Game:
         # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
         self._none_player_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
-        self._player = Player.Player()
+        self._player = player.Player()
         # Aloitettaessa uusi peli, luodaan counter -objekti default parametreillä
         self._counters = Counter()
         # TODO: Counterin luonti ladattaessa peli tallennuksesta

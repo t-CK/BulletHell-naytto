@@ -1,7 +1,6 @@
-import pygame as pg
+from pygame import sprite
 
 SCREEN_SIZE = (WIDTH, HEIGHT) = 640, 480
-SCREEN = pg.display.set_mode(SCREEN_SIZE)
 
 SPRITE_SCALE = 1
 
@@ -11,12 +10,10 @@ DEFAULT_PICKUP_DISTANCE = 40
 
 STARTING_SPAWN_TIME = 200
 
-clock = pg.time.Clock()
-
-all_sprites = pg.sprite.Group() # not including player
-bullet_group = pg.sprite.Group()
-enemy_group = pg.sprite.Group()
-items_group = pg.sprite.Group()
-world_group = pg.sprite.Group()
-collideable = pg.sprite.Group()
-ui_group = pg.sprite.Group()
+all_sprites = sprite.Group() # not including player or UI
+bullet_group = sprite.Group()
+enemy_group = sprite.Group()
+items_group = sprite.Group()
+world_group = sprite.Group()
+collideable = sprite.Group()
+ui_group = sprite.Group()

@@ -1,17 +1,17 @@
 from pygame import event
 from pygame import key
 from pygame import locals
-import Player
+import player
 import Game
 from Log import *
 from sys import exit
 from enum import Enum
 
 class Input:
-    _p1 :Player # Referenssi pelaajaobjektiin
+    _p1 :player.Player # Referenssi pelaajaobjektiin
     _game :Game.Game # Referenssi peliin
     
-    def __init__(self, game :Game.Game, player :Player.Player) -> None:
+    def __init__(self, game :Game.Game, player :player.Player) -> None:
         self._p1 = player
         self._game = game
         key.set_repeat(10, 0)
