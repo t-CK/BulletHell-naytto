@@ -6,7 +6,6 @@ from variables import *
 
 def process_event_queue(game):
     """ Check event queue for non-movement related keypresses """
-    global mouse_movement_enabled
     game = game
     player = game.player
     for event in pg.event.get():
