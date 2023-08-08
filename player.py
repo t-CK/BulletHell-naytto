@@ -89,22 +89,30 @@ class Player(pg.sprite.Sprite):
             if distance_from_player > MIN_MOUSE_DISTANCE:
                 if 3*abs(mouse_x - self.rect.center[0])/WIDTH > abs(mouse_y - self.rect.center[1])/HEIGHT:
                     if mouse_x > self.rect.center[0]:
-                        self.rect.move_ip(self.speed * speed_multiplier, 0)
+                        # self.rect.move_ip(self.speed * speed_multiplier, 0)
+                        self.move_player(self.speed * speed_multiplier, 0)
                         while pg.sprite.spritecollideany(self, collideable):
-                            self.rect.move_ip(-1, 0)
+                            # self.rect.move_ip(-1, 0)
+                            self.move_player(-1, 0)
                     else:
-                        self.rect.move_ip(-self.speed * speed_multiplier, 0)
+                        # self.rect.move_ip(-self.speed * speed_multiplier, 0)
+                        self.move_player(-self.speed * speed_multiplier, 0)
                         while pg.sprite.spritecollideany(self, collideable):
-                            self.rect.move_ip(1, 0)
+                            # self.rect.move_ip(1, 0)
+                            self.move_player(1, 0)
                 if abs(mouse_x - self.rect.center[0])/WIDTH < 2*abs(mouse_y - self.rect.center[1])/HEIGHT:
                     if mouse_y > self.rect.center[1]:
-                        self.rect.move_ip(0, self.speed * speed_multiplier)
+                        # self.rect.move_ip(0, self.speed * speed_multiplier)
+                        self.move_player(0, self.speed * speed_multiplier)
                         while pg.sprite.spritecollideany(self, collideable):
-                            self.rect.move_ip(0, -1)
+                            # self.rect.move_ip(0, -1)
+                            self.move_player(0, -1)
                     else:
-                        self.rect.move_ip(0, -self.speed * speed_multiplier)
+                        # self.rect.move_ip(0, -self.speed * speed_multiplier)
+                        self.move_player(0, -self.speed * speed_multiplier)
                         while pg.sprite.spritecollideany(self, collideable):
-                            self.rect.move_ip(0, 1)
+                            # self.rect.move_ip(0, 1)
+                            self.move_player(0, 1)
 
     def move_x(self, value):
         if value > 0:

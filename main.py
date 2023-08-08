@@ -44,7 +44,6 @@ class App():
             while abs(pos_x - self.player.rect.centerx) < 50 + size_x and abs(pos_y - self.player.rect.centery) < 50 + size_y:
                 position = (pos_x, pos_y) = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
             world.World(*position, *size)
-    
 
     def spawn_enemies(self):
         """ Spawns enemies at decreasing intervals, starting at STARTING_SPAWN_TIME ticks apart """
