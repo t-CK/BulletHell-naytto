@@ -3,7 +3,7 @@ import random, math, sys
 import weapons, misc, enemies
 from pygame.locals import *
 from variables import *
-
+        
 def process_event_queue(game):
     """ Check event queue for non-movement related keypresses """
     game = game
@@ -33,6 +33,7 @@ def process_event_queue(game):
             0 = Kill enemies
         """
         global prev
+
         if event.type == KEYDOWN:
             if event.key == K_1:
                 player.speed -= 1
@@ -55,9 +56,19 @@ def process_event_queue(game):
             elif event.key == K_0:
                 for sprite in enemy_group:
                     sprite.death()
+            elif pg.key.get_pressed()[K_p]:
+                for sprite in enemy_group:
+                    if isinstance(sprite, enemies.Enemy_Follow):
+                        sprite.target = player.rect.center if sprite.target == (50,50) else (50,50)
         if pg.key.get_pressed()[K_6]:
             weapons.Bullet_Line(game)
         if pg.key.get_pressed()[K_7]:
             weapons.Bullet_Line(game, misc.get_random_enemy())
         if pg.key.get_pressed()[K_8]:
             weapons.Bullet_Sine(game)
+            
+        
+        if pg.key.get_pressed()[K_o]:
+            weapons.spawn_orbiters(game, 4)
+        if pg.key.get_pressed()[K_i]:
+            weapons.spawn_orbiters(game, 10)
