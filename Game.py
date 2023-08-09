@@ -86,11 +86,16 @@ class Game:
                 
                 # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
                 for obj in self._non_player_sprites:
+                    # Tarkastetaan x-akseli
                     if self._sprite_group.has(obj):
                         if obj.get_x() < self._camera[0]-self._wnd_size[0]-self._wnd_size[0]/2 or obj.get_x() > self._camera[0] +self._wnd_size[0]:
                             self._sprite_group.remove(obj)
+                    # Tarkastetaan y-akseli mikäli x-akselin tarkastus ei ole poistanut spriteä groupista
+                    #if self._sprite_group.has(obj):
+                    if obj.get_y() > self._camera[1] - self._wnd_size[1] / 2.5:
+                        self._sprite_group.remove(obj)
                     else:
-                        if obj.get_x() >= self._camera[0] -self._wnd_size[0]*1.35 and obj.get_x() <= self._camera[0]+self._wnd_size[0]:
+                        if obj.get_x() >= self._camera[0] +self._wnd_size[0]*1.35 and obj.get_x() <= self._camera[0]-self._wnd_size[0] and obj.get_y() >= self._camera[1] - self._wnd_size[1] / 2 or obj.get_y() <= self._camera[1] + self._wnd_size[1] / 2:
                             self._sprite_group.add(obj)
                             
                 # Päivitetään peliobjektit
