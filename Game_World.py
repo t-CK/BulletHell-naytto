@@ -1,4 +1,4 @@
-from Player import Player
+from player import Player
 
 # Kartan koko
 MAP_WIDTH = 5000

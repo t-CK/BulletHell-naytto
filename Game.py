@@ -1,7 +1,7 @@
 import Log
 import Window
 import Game_World
-import Player
+import player
 import input
 from Counter import Counter
 
@@ -45,7 +45,7 @@ class Game:
         self._non_player_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
         self._wnd_size = self._wnd.get_size()
-        self._player = Player.Player(self._wnd_size)
+        self._player = player.Player(self._wnd_size)
         # Aloitettaessa uusi peli, luodaan counter -objekti default parametreillä
         self._counters = Counter(self._wnd)
         # TODO: Counterin luonti ladattaessa peli tallennuksesta
@@ -70,7 +70,7 @@ class Game:
     def update_game(self, x_val, y_val):
         """Päivittää pelin spritet vastaamaan pelaajan uutta sijaintia ikkunassa"""
         for ent in self._non_player_sprites:
-            ent.obj_update(x_val, y_val)
+            ent.rect.move_ip(x_val, y_val)
         self._camera = self._map.Update()
 
     def game_loop(self):
