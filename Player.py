@@ -64,7 +64,7 @@ class Player(pg.sprite.Sprite):
             while pg.sprite.spritecollideany(self, collideable):
                 self.rect.move_ip(-1, 0)
         # Päivitetään pelaajan sijainti kartalla
-        self._map_x += value
+        self._map_x += value * self.speed
         self.rect.center = [self._window_size[0] / 2, self._window_size[1] / 2]
     
     def move_y(self, value):
@@ -77,7 +77,7 @@ class Player(pg.sprite.Sprite):
             while pg.sprite.spritecollideany(self, collideable):
                 self.rect.move_ip(0, -1)
         # Päivitetään pelaajan sijainti kartalla
-        self._map_y += value
+        self._map_y += value * self.speed
         self.rect.center = [self._window_size[0] / 2, self._window_size[1] / 2]
 
     def update(self):
