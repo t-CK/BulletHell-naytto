@@ -90,26 +90,33 @@ class Enemy(pg.sprite.Sprite):
         
 class Enemy_Follow(Enemy):
     """ Enemy moving in a straight line towards player """
-    def __init__(self, game, position = (0,0), hp = 3, speed = 1, dmg = 1, solid = True):
+    def __init__(self, game, position = (0,0), target: tuple or Sprite = None, hp = 3, speed = 1, dmg = 1, solid = True):
         super().__init__(game, position, hp, speed, dmg, solid)
+        
+        if target is None:
+            self.target = self.player.rect.center
+        elif type(target) is tuple:
+            self.target = target
+        else:
+            self.target = target.rect.center
         
     def update(self):
         """ Move towards player. Move back until there's no collision (if corporeal). """
         super().update() # For i-frames
         collideable.remove(self)
-        if self.player.rect.center[0] > self.rect.center[0]:
+        if self.target[0] > self.rect.center[0]:
             self.rect.move_ip(self.speed,0)
             while self.solid and pg.sprite.spritecollideany(self, collideable):
                 self.rect.move_ip(-1,0)
-        elif self.player.rect.center[0] < self.rect.center[0]:
+        elif self.target[0] < self.rect.center[0]:
             self.rect.move_ip(-self.speed,0)
             while self.solid and pg.sprite.spritecollideany(self, collideable):
                 self.rect.move_ip(1,0)
-        if self.player.rect.center[1] > self.rect.center[1]:
+        if self.target[1] > self.rect.center[1]:
             self.rect.move_ip(0,self.speed)
             while self.solid and pg.sprite.spritecollideany(self, collideable):
                 self.rect.move_ip(0,-1)
-        elif self.player.rect.center[1] < self.rect.center[1]:
+        elif self.target[1] < self.rect.center[1]:
             self.rect.move_ip(0,-self.speed)
             while self.solid and pg.sprite.spritecollideany(self, collideable):
                 self.rect.move_ip(0,1)
