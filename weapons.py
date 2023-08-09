@@ -55,7 +55,7 @@ class Bullet_Line(Bullet):
 class Bullet_Orbit(Bullet):
     """ Bullet object circling a constant point at (x,y) or a Sprite.
 
-    Speed-attribute affects time to do a complete circle, thus the velocity of
+    Speed-attribute (inversely) affects time to do a complete circle, thus the velocity of
     the projectile depends on [radius] as well as [speed]. Despawns after [ttl] ticks (unless ttl < 0).
     Offset is a tuple of (x,y,X,Y), where x/y scale and X/Y skew the circle, allowing for ellipses.
     """
@@ -84,6 +84,7 @@ class Bullet_Orbit(Bullet):
                 self.kill()
         if self.center_object:
             self.center = (self.centerx, self.centery) = self.center_object.rect.center
+        # Adding (r*sin(i), r*cos(i)) to (x,y) follows a circle of radius r as i -> inf.
         self.rect.center = (self.centerx + self.x_scale*self.radius*math.sin((self.x_offset+self.game.ticks)/self.speed),
                             self.centery + self.y_scale*self.radius*math.cos((self.y_offset+self.game.ticks)/self.speed))
                             
@@ -100,3 +101,12 @@ class Bullet_Sine(Bullet_Line):
                        (-self.step[1], self.step[0])]
         self.rect.move_ip(self.offset)
         
+def spawn_orbiters(game, n = 2, radius = 100, speed = 30, ttl = 500):
+    """ Spawns n equidistant Bullet_Orbits around player
+    
+    As math.sin() and .cos() use radians (and the formula in Bullet_Orbit divides by speed)
+    adding (2/n*pi * speed) to both should make following bullets equally spaced.
+    """
+    offset = 2/n*math.pi*speed
+    for i in range(n):
+        Bullet_Orbit(game, game.player, radius, speed, ttl, (1,1,i*offset,i*offset))
