@@ -12,7 +12,7 @@ class Counter:
         2. tappojen määrä (ladattaessa peli tallennuksesta), oletusarvona 0
         3. aikalaskuri (ladattaessa peli tallennuksesta), oletusarvona 0.0"""
         self._kill_count = kill
-        if time > 0:
+        if time.time() > 0:
             self._timer_start = timer
         # Luodaan ajastin -objekti laskemaan kulunutta peliaikaa
         else: self._timer_start = time.time()

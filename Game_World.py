@@ -1,8 +1,8 @@
-from Player import Player
+from player import Player
 
 # Kartan koko
-MAP_WIDTH = 1000
-MAP_HEIGHT = 1000
+MAP_WIDTH = 5000
+MAP_HEIGHT = 5000
 
 class Map:
     # Kameran X ja Y sijainti

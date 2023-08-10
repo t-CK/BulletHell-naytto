@@ -1,18 +1,21 @@
 import Log
 import Window
 import Game_World
-import Player
+import player
 import input
 from Counter import Counter
-
-import project # DEBUG
 
 from pygame import event
 from pygame import key
 from pygame import time
 from pygame import locals
 from pygame import sprite
+from pygame import display
 from enum import Enum, IntEnum
+
+from variables import *
+
+import enemies
 
 
 # Enum luokka pelin statuksen seuraamista varten
@@ -27,6 +30,7 @@ class Game:
     _state :Game_State
     _game_objects = []
     _wnd :Window.Window
+    _wnd_size :tuple
     # delta time
     _prev_tick = 0
     _delta_time = 0.0
@@ -38,11 +42,12 @@ class Game:
         self._state = Game_State.RUNNING
         self._is_Running = True
         # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
-        self._none_player_sprites = []
+        self._non_player_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
-        self._player = Player.Player()
+        self._wnd_size = self._wnd.get_size()
+        self._player = player.Player(self._wnd_size)
         # Aloitettaessa uusi peli, luodaan counter -objekti default parametreillä
-        self._counters = Counter()
+        self._counters = Counter(self._wnd)
         # TODO: Counterin luonti ladattaessa peli tallennuksesta
         
         self._input = input.Input(self, self._player)
@@ -56,7 +61,7 @@ class Game:
         
     def add_sprite(self, new_sprite) -> None:
         """Lisää spriten groupiin"""
-        self._none_player_sprites.append(new_sprite)
+        self._non_player_sprites.append(new_sprite)
         
     def add_ui(self, ui):
         """Lisää uuden UI -elementin peliin"""
@@ -64,11 +69,12 @@ class Game:
         self._ui_group.add(ui)   # Lisätään uusi UI -elementti pygamen sprite groupiin
     def update_game(self, x_val, y_val):
         """Päivittää pelin spritet vastaamaan pelaajan uutta sijaintia ikkunassa"""
-        Log.Log_Info(f"update_game kutsuttu {x_val} : {y_val}")
-#        for ent in self._none_player_sprites:
-#            ent.update_map(x_val, y_val)
+        for ent in self._non_player_sprites:
+            ent.rect.move_ip(x_val, y_val)
+        self._camera = self._map.Update()
 
     def game_loop(self):
+        self.add_sprite(enemies.Enemy(self,(100,100))) #DEBUG
         while self._is_Running:         
             # Jos peli on käynnissä, ajetaan loopin ensimmäinen if lohko
             if self._state == Game_State.RUNNING:
@@ -77,20 +83,28 @@ class Game:
                 
                 # Päivitetään kamera
                 self._camera = self._map.Update()
+                
                 # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
-                for o in self._none_player_sprites:
-                    if self._sprite_group.has(o):
-                        if (o.get_x() < self._camera[0] or o.get_x()) > (self._camera[0] + Game_World.SCREEN_WIDTH):
-                            self._sprite_group.remove(o)
+                for obj in self._non_player_sprites:
+                    # Tarkastetaan x-akseli
+                    if self._sprite_group.has(obj):
+                        if obj.get_x() < self._camera[0]-self._wnd_size[0]-self._wnd_size[0]/2 or obj.get_x() > self._camera[0] +self._wnd_size[0]:
+                            self._sprite_group.remove(obj)
+                    # Tarkastetaan y-akseli mikäli x-akselin tarkastus ei ole poistanut spriteä groupista
+                    #if self._sprite_group.has(obj):
+                    if obj.get_y() > self._camera[1] - self._wnd_size[1] / 2.5:
+                        self._sprite_group.remove(obj)
                     else:
-                        if (o.get_x() >= self._camera[0]) and (o.get_x() <= self._camera[0] + Game_World.SCREEN_WIDTH):
-                            self._sprite_group.add(o)
+                        if obj.get_x() >= self._camera[0] +self._wnd_size[0]*1.35 and obj.get_x() <= self._camera[0]-self._wnd_size[0] and obj.get_y() >= self._camera[1] - self._wnd_size[1] / 2 or obj.get_y() <= self._camera[1] + self._wnd_size[1] / 2:
+                            self._sprite_group.add(obj)
+                            
                 # Päivitetään peliobjektit
                 
 
             # Jos game_state on PAUSE, asetetaan prev_tick arvoksi 0, tarkastetaan onko escape näppäintä painettu pausen lopettamiseksi
             # ja hypätään loopin alkuun
             elif self._state == Game_State.PAUSED:
+                self._delta_time = 0.0
                 if event.peek():
                     keys = key.get_pressed()
                     e = event.poll()
@@ -104,26 +118,30 @@ class Game:
             self._wnd.draw_background()
             # Renderöidään peliobjektit/valikot
             if self._state == Game_State.RUNNING:
-                #self._sprite_group.draw(self._wnd._wnd)
-                self._ui_group.draw(self._wnd._wnd)
-                # DEBUG
-                Log.Log_Info(self._delta_time)
-                Log.Log_Info("RUNNING")
+                for sprite in self._sprite_group:
+
+                    # DEBUG
+                    try:
+                        sprite.debug_print()
+                        # DEBUG
+                        Log.Log_Error(f"Camera {self._camera}")
+                        Log.Log_Warning(f"Enemy {sprite.get_x()} : {sprite.get_y()}")
+                    except:
+                        pass
+
+                    self._wnd._wnd.blit(sprite.surf, sprite.rect)
+                for sprite in self._ui_group:
+                    self._wnd._wnd.blit(sprite.surf, sprite.rect)
+                display.flip()
                 
  #               self._wnd.draw_objects(self._sprite_group)
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
                 if self._prev_tick == 0.0:
-                    self._prev_tick = time.get_ticks()
+                    self._delta_time = 0.0
                 else:
                     self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
-                    self._prev_tick = time.get_ticks()
-            elif self._state == Game_State.PAUSED:
-                # Valikon renderöinti
-                # Tarkastetaan käyttäjän syöte
-                self._input.get_input()
-                # Asetetaan delta_time arvoksi 0 ja päivitetään self._prev_tick
-                self._delta_time = 0.0
-                self._prev_tick = time.get_ticks()
+                    
+            self._prev_tick = time.get_ticks()
 
     def toggle_state(self, state :Game_State):
         if self._state == state:
@@ -137,6 +155,7 @@ class Game:
     def get_delta_time(self) -> float:
         return self._delta_time
     
+
 
 if __name__ == "__main__":
     game=Game()

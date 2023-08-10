@@ -22,13 +22,15 @@ class Window:
         # Set window flags and create window object
         flags_ = locals.FULLSCREEN | locals.DOUBLEBUF | locals.HWACCEL | locals.SHOWN
         self._wnd = display.set_mode((0, 0), flags=flags_, display=0, vsync=1)
+        self.WIDTH, self.HEIGHT = display.get_window_size()
         
     def draw_background(self):
         self._wnd.fill(color=(255,0,255))
-        display.flip() # DEBUG
     
     def draw_objects(self, sprites :sprite.Group):
         self._wnd.fill(color=(255,0,255))
         sprites.draw(self._wnd)
         display.flip()
-
+        
+    def get_size(self) -> tuple:
+        return self._wnd.get_size()
