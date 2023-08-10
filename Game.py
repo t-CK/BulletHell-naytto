@@ -142,8 +142,6 @@ class Game:
                     self._prev_tick = time.get_ticks()
             elif self._state == Game_State.PAUSED:
                 # Valikon renderöinti
-                # Tarkastetaan käyttäjän syöte
-                self._input.get_input()
                 # Asetetaan delta_time arvoksi 0 ja päivitetään self._prev_tick
                 self._delta_time = 0.0
                 self._prev_tick = time.get_ticks()
