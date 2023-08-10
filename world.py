@@ -1,4 +1,5 @@
 import pygame as pg
+from variables import *
 
 class World(pg.sprite.Sprite):
     """ World object such as an obstacle or a special area of the level
@@ -16,5 +17,7 @@ class World(pg.sprite.Sprite):
         self.rect.topleft = (pos_x, pos_y)
 
         all_sprites.add(self)
+        world_group.add(self)
+        
         if self.solid:
             collideable.add(self)

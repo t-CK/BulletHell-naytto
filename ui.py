@@ -1,4 +1,5 @@
-from pygame import sprite, Surface, display
+from pygame import sprite, Surface, display, draw
+from variables import *
 
 class Ui(sprite.Sprite):
     """ UI parent class (pretty unnecessary at the moment) """
@@ -8,6 +9,8 @@ class Ui(sprite.Sprite):
         self.surf = Surface(self._wnd_size)
         self.surf.fill((0, 255, 0))
         self.surf.set_colorkey((0, 255, 0))
+        ui_group.add(self)
+        
         game.add_ui(self) # Lisätään ui-elementti Game -luokan spriteihin
 
 class Ui_Bar(Ui):
@@ -34,8 +37,8 @@ class Ui_Bar(Ui):
         else:
             bar_width = self.value()/self.value_max() * self.bar_max_width
         
-        display.draw.rect(self.surf, (0, 0, 0), (0, 0, self.bar_max_width, self.bar_height), 0, self._wnd_size[1]//300)
-        display.draw.rect(self.surf, self.color, (0, 0, bar_width, self.bar_height), 0, self._wnd_size[1]//300)
+        draw.rect(self.surf, (0, 0, 0), (0, 0, self.bar_max_width, self.bar_height), 0, self._wnd_size[1]//300)
+        draw.rect(self.surf, self.color, (1, 1, bar_width-1, self.bar_height-1), 0, self._wnd_size[1]//300)
 
 class Ui_Bar_XP(Ui_Bar):
     """ XP Bar on top of screen, purplish """

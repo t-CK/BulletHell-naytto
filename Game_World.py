@@ -1,17 +1,15 @@
-from player import Player
-
 # Kartan koko
 MAP_WIDTH = 5000
 MAP_HEIGHT = 5000
 
 class Map:
     # Kameran X ja Y sijainti
-    _camera_x :int
-    _camera_y :int
+    # _camera_x :int
+    # _camera_y :int
     # Referenssi pelaajaan
-    _p1 :Player
+    # _p1 :Player
     
-    def __init__(self, player :Player) -> None:
+    def __init__(self, player) -> None:
         # Tallennetaan referenssi pelaaja objektiin
         self._p1 = player
         # Asetetaan kameran sijainti vastaamaan pelaajan sijaintia kartalla

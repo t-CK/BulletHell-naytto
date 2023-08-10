@@ -56,68 +56,6 @@ class Player(pg.sprite.Sprite):
         """ Decreases i-frames, also checks for movement input for now. """
         if self.invulnerable > 0:
             self.invulnerable -= 1
-        """# Keyboard input for player movement with arrows & WASD
-        if not self.mouse_movement_enabled:
-            keys = pg.key.get_pressed()
-            if keys[K_UP] or keys[K_w]:
-                # self.rect.move_ip(0, -self.speed)
-                self.move_player(0, -self.speed)
-                while pg.sprite.spritecollideany(self, collideable):
-                    # self.rect.move_ip(0, 1)
-                    self.move_player(0, 1)
-            if keys[K_RIGHT] or keys[K_d]:
-                # self.rect.move_ip(self.speed, 0)
-                self.move_player(self.speed, 0)
-                while pg.sprite.spritecollideany(self, collideable):
-                    # self.rect.move_ip(-1, 0)
-                    self.move_player(-1, 0)
-            if keys[K_DOWN] or keys[K_s]:
-                # self.rect.move_ip(0, self.speed)
-                self.move_player(0, self.speed)
-                while pg.sprite.spritecollideany(self, collideable):
-                    # self.rect.move_ip(0, -1)
-                    self.move_player(0, -1)
-            if keys[K_LEFT] or keys[K_a]:
-                # self.rect.move_ip(-self.speed, 0)
-                self.move_player(-self.speed, 0)
-                while pg.sprite.spritecollideany(self, collideable):
-                    # self.rect.move_ip(1, 0)
-                    self.move_player(1, 0)
-
-        # Mouse movement testing
-        else:
-            MIN_MOUSE_DISTANCE = 30
-            mouse_x, mouse_y = pg.mouse.get_pos()
-            distance_from_player = misc.get_distance((mouse_x, mouse_y), self.rect.center)
-            speed_multiplier = min(1, (distance_from_player - MIN_MOUSE_DISTANCE)/WIDTH*3.5)
-
-            if distance_from_player > MIN_MOUSE_DISTANCE:
-                if 3*abs(mouse_x - self.rect.center[0])/WIDTH > abs(mouse_y - self.rect.center[1])/HEIGHT:
-                    if mouse_x > self.rect.center[0]:
-                        # self.rect.move_ip(self.speed * speed_multiplier, 0)
-                        self.move_player(self.speed * speed_multiplier, 0)
-                        while pg.sprite.spritecollideany(self, collideable):
-                            # self.rect.move_ip(-1, 0)
-                            self.move_player(-1, 0)
-                    else:
-                        # self.rect.move_ip(-self.speed * speed_multiplier, 0)
-                        self.move_player(-self.speed * speed_multiplier, 0)
-                        while pg.sprite.spritecollideany(self, collideable):
-                            # self.rect.move_ip(1, 0)
-                            self.move_player(1, 0)
-                if abs(mouse_x - self.rect.center[0])/WIDTH < 2*abs(mouse_y - self.rect.center[1])/HEIGHT:
-                    if mouse_y > self.rect.center[1]:
-                        # self.rect.move_ip(0, self.speed * speed_multiplier)
-                        self.move_player(0, self.speed * speed_multiplier)
-                        while pg.sprite.spritecollideany(self, collideable):
-                            # self.rect.move_ip(0, -1)
-                            self.move_player(0, -1)
-                    else:
-                        # self.rect.move_ip(0, -self.speed * speed_multiplier)
-                        self.move_player(0, -self.speed * speed_multiplier)
-                        while pg.sprite.spritecollideany(self, collideable):
-                            # self.rect.move_ip(0, 1)
-                            self.move_player(0, 1)"""
 
     def move_x(self, value):
         if value > 0:
