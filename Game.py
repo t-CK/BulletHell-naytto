@@ -104,6 +104,7 @@ class Game:
             # Jos game_state on PAUSE, asetetaan prev_tick arvoksi 0, tarkastetaan onko escape näppäintä painettu pausen lopettamiseksi
             # ja hypätään loopin alkuun
             elif self._state == Game_State.PAUSED:
+                self._delta_time = 0.0
                 if event.peek():
                     keys = key.get_pressed()
                     e = event.poll()
@@ -136,15 +137,11 @@ class Game:
  #               self._wnd.draw_objects(self._sprite_group)
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
                 if self._prev_tick == 0.0:
-                    self._prev_tick = time.get_ticks()
+                    self._delta_time = 0.0
                 else:
                     self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
-                    self._prev_tick = time.get_ticks()
-            elif self._state == Game_State.PAUSED:
-                # Valikon renderöinti
-                # Asetetaan delta_time arvoksi 0 ja päivitetään self._prev_tick
-                self._delta_time = 0.0
-                self._prev_tick = time.get_ticks()
+                    
+            self._prev_tick = time.get_ticks()
 
     def toggle_state(self, state :Game_State):
         if self._state == state:
