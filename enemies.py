@@ -94,7 +94,7 @@ class Enemy_Follow(Enemy):
         super().__init__(game, position, hp, speed, dmg, solid)
         
         if target is None:
-            self.target = self.player.rect.center
+            self.target = game._player.rect.center
         elif type(target) is tuple:
             self.target = target
         else:
@@ -125,8 +125,8 @@ class Enemy_Follow(Enemy):
     
 class Enemy_Sine(Enemy_Follow):
     """ Enemy_Follow but with some added circling """
-    def __init__(self, game, position = (0,0), hp = 3, speed = 1, dmg = 1, solid = False):
-        super().__init__(game, position, hp, speed, dmg, solid)
+    def __init__(self, game, position = (0,0), target = None, hp = 3, speed = 1, dmg = 1, solid = False):
+        super().__init__(game, position, target, hp, speed, dmg, solid)
         
     def update(self):
         super().update() # For i-frames and movement towards player

@@ -1,4 +1,5 @@
 from variables import *
+import math, random
 
 def get_closest_enemy(position: tuple or Sprite = None):
     """ Return enemy Sprite closest to passed point or Sprite (or player by default) """

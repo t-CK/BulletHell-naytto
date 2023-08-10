@@ -8,8 +8,55 @@ def process_event_queue(game):
     """ Check event queue for non-movement related keypresses """
     game = game
     player = game.player
-    for event in pg.event.get():
+    
+    # Keyboard input for player movement with arrows & WASD
+    if not player.mouse_movement_enabled:
+        keys = pg.key.get_pressed()
+        if keys[K_UP] or keys[K_w]:
+            player.move_player(0, -player.speed)
+            while pg.sprite.spritecollideany(player, collideable):
+                player.move_player(0, 1)
+        if keys[K_RIGHT] or keys[K_d]:
+            player.move_player(player.speed, 0)
+            while pg.sprite.spritecollideany(player, collideable):
+                player.move_player(-1, 0)
+        if keys[K_DOWN] or keys[K_s]:
+            player.move_player(0, player.speed)
+            while pg.sprite.spritecollideany(player, collideable):
+                player.move_player(0, -1)
+        if keys[K_LEFT] or keys[K_a]:
+            player.move_player(-player.speed, 0)
+            while pg.sprite.spritecollideany(player, collideable):
+                player.move_player(1, 0)
 
+    # Mouse movement testing
+    else:
+        MIN_MOUSE_DISTANCE = 30
+        mouse_x, mouse_y = pg.mouse.get_pos()
+        distance_from_player = misc.get_distance((mouse_x, mouse_y), player.rect.center)
+        speed_multiplier = min(1, (distance_from_player - MIN_MOUSE_DISTANCE)/WIDTH*3.5)
+
+        if distance_from_player > MIN_MOUSE_DISTANCE:
+            if 3*abs(mouse_x - player.rect.center[0])/WIDTH > abs(mouse_y - player.rect.center[1])/HEIGHT:
+                if mouse_x > player.rect.center[0]:
+                    player.move_player(player.speed * speed_multiplier, 0)
+                    while pg.sprite.spritecollideany(player, collideable):
+                        player.move_player(-1, 0)
+                else:
+                    player.move_player(-player.speed * speed_multiplier, 0)
+                    while pg.sprite.spritecollideany(player, collideable):
+                        player.move_player(1, 0)
+            if abs(mouse_x - player.rect.center[0])/WIDTH < 2*abs(mouse_y - player.rect.center[1])/HEIGHT:
+                if mouse_y > player.rect.center[1]:
+                    player.move_player(0, player.speed * speed_multiplier)
+                    while pg.sprite.spritecollideany(player, collideable):
+                        player.move_player(0, -1)
+                else:
+                    player.move_player(0, -player.speed * speed_multiplier)
+                    while pg.sprite.spritecollideany(player, collideable):
+                        player.move_player(0, 1)
+    
+    for event in pg.event.get():
         # ESC / Close button
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             pg.quit()

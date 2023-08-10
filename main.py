@@ -5,12 +5,14 @@ from player import Player
 from variables import *
 
 pg.init()
+SCREEN_SIZE = (WIDTH, HEIGHT) = (1000,800)
 SCREEN = pg.display.set_mode(SCREEN_SIZE)
 
 class App():
     def __init__(self):
         self.ticks = 0
-        self.player = Player()
+        self.player = self._player = Player((0,0))
+        self._wnd_size = SCREEN_SIZE
         self.initialize_game()
         self.spawn_timer = STARTING_SPAWN_TIME
         self.clock = pg.time.Clock()
@@ -18,8 +20,8 @@ class App():
     def initialize_game(self):
         """ Initialize player, Ui etc. """
         self.player.rect.center = (WIDTH//2, HEIGHT//2)
-        ui.Ui_Bar_XP(self.player)
-        ui.Ui_Bar_Health(self.player)
+        ui.Ui_Bar_XP(self)
+        ui.Ui_Bar_Health(self)
         self.initialize_level()
     
     def main(self):
@@ -90,6 +92,9 @@ class App():
         for sprite in ui_group:
             SCREEN.blit(sprite.surf, sprite.rect)
         pg.display.flip()
+        
+    def add_ui(*args):
+        pass
     
 if __name__ == "__main__":
     App().main()
