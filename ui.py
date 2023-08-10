@@ -1,5 +1,4 @@
 from pygame import sprite, Surface, display
-import player
 
 class Ui(sprite.Sprite):
     """ UI parent class (pretty unnecessary at the moment) """
