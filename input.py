@@ -25,12 +25,6 @@ class Input:
             if e.type == locals.QUIT:
                 exit()
             # Vaihdetaan Game_State PAUSED ja RUNNING välillä painettaessa esc -näppäintä
-            if keys[locals.K_ESCAPE]:
-                self._game.toggle_state(Game.Game_State.PAUSED)
-                #if self._game.get_state() == Game.Game_State.RUNNING:
-                #    self._game._state = Game.Game_State.PAUSED
-                #elif self._game.get_state() == Game.Game_State.PAUSED:
-                #    self._game._state = Game.Game_State.RUNNING
             # Pelaajan liikutus
             if keys[locals.K_UP]:
                 self._p1.move_y(-1)
