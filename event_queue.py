@@ -103,10 +103,6 @@ def process_event_queue(game):
             elif event.key == K_0:
                 for sprite in enemy_group:
                     sprite.death()
-            elif pg.key.get_pressed()[K_p]:
-                for sprite in enemy_group:
-                    if isinstance(sprite, enemies.Enemy_Follow):
-                        sprite.target = player.rect.center if sprite.target == (50,50) else (50,50)
         if pg.key.get_pressed()[K_6]:
             weapons.Bullet_Line(game)
         if pg.key.get_pressed()[K_7]:
@@ -114,7 +110,8 @@ def process_event_queue(game):
         if pg.key.get_pressed()[K_8]:
             weapons.Bullet_Sine(game)
             
-        
+        if pg.key.get_pressed()[K_p]:
+            weapons.spawn_orbiters(game, 3)    
         if pg.key.get_pressed()[K_o]:
             weapons.spawn_orbiters(game, 4)
         if pg.key.get_pressed()[K_i]:
