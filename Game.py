@@ -42,7 +42,7 @@ class Game:
         self._state = Game_State.RUNNING
         self._is_Running = True
         # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
-        self._non_player_sprites = []
+        self._enemy_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
         self._wnd_size = self._wnd.get_size()
         self._player = player.Player(self._wnd_size)
@@ -61,7 +61,7 @@ class Game:
         
     def add_sprite(self, new_sprite) -> None:
         """Lisää spriten groupiin"""
-        self._non_player_sprites.append(new_sprite)
+        self._enemy_sprites.append(new_sprite)
         
     def add_ui(self, ui):
         """Lisää uuden UI -elementin peliin"""
@@ -69,7 +69,7 @@ class Game:
         self._ui_group.add(ui)   # Lisätään uusi UI -elementti pygamen sprite groupiin
     def update_game(self, x_val, y_val):
         """Päivittää pelin spritet vastaamaan pelaajan uutta sijaintia ikkunassa"""
-        for ent in self._non_player_sprites:
+        for ent in self._enemy_sprites:
             ent.rect.move_ip(x_val, y_val)
         self._camera = self._map.Update()
 
@@ -85,7 +85,7 @@ class Game:
                 self._camera = self._map.Update()
                 
                 # Käydään läpi spritet ja renderöidään ainoastaan näkyvissä olevat
-                for obj in self._non_player_sprites:
+                for obj in self._enemy_sprites:
                     # Tarkastetaan x-akseli
                     if self._sprite_group.has(obj):
                         if obj.get_x() < self._camera[0]-self._wnd_size[0]-self._wnd_size[0]/2 or obj.get_x() > self._camera[0] +self._wnd_size[0]:
@@ -128,13 +128,21 @@ class Game:
                         Log.Log_Warning(f"Enemy {sprite.get_x()} : {sprite.get_y()}")
                     except:
                         pass
+                    
+                    
+                    # Render ###################
+                    self._wnd.draw_background()                 # renderöidään taustaväri
 
-                    self._wnd._wnd.blit(sprite.surf, sprite.rect)
-                for sprite in self._ui_group:
-                    self._wnd._wnd.blit(sprite.surf, sprite.rect)
-                display.flip()
+                    player_group = []                           # Luodaan Playerille oma group renderöintiä varten
+                    player_group.append(self._player)       
+                    self._wnd.draw_objects(player_group)        # Renderöidään pelaaja
+                    
+                    self._wnd.draw_objects(self._enemy_sprites) # Renderöidään viholliset
+                    self._wnd.draw_objects(self._ui_group)      # Renderöidään UI
+                    self._counters.render_counter_ui()          # Renderöidään counterit
+                    ############################
                 
- #               self._wnd.draw_objects(self._sprite_group)
+ 
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
                 if self._prev_tick == 0.0:
                     self._delta_time = 0.0
