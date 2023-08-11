@@ -3,13 +3,13 @@ import math, random
 
 def get_closest_enemy(position: tuple or Sprite = None):
     """ Return enemy Sprite closest to passed point or Sprite (or player by default) """
-    if len(enemies) == 0:
+    if len(enemy_group) == 0:
         return None
     target = (target_x, target_y) = (0,0)
     if not position:
         position = player
     origin = (origin_x, origin_y) = position if type(position) == tuple else position.rect.center
-    for sprite in enemies:
+    for sprite in enemy_group:
         if get_distance(sprite, origin) < get_distance(target, origin):
             target = sprite
     if target == (0,0):
@@ -18,8 +18,8 @@ def get_closest_enemy(position: tuple or Sprite = None):
 
 def get_random_enemy():
     """ Return a random enemy Sprite (or None) """
-    if len(enemies) > 0:
-        return enemies.sprites()[random.randrange(len(enemies))]
+    if len(enemy_group) > 0:
+        return enemy_group.sprites()[random.randrange(len(enemy_group))]
     else:
         return None
 
@@ -88,7 +88,7 @@ def check_collisions():
     Movement related collision is in each sprite's update() function, and checking
     distance for pickups happens in the pickup's update().
     """
-    for sprite in enemies:
+    for sprite in enemy_group:
         if pg.sprite.spritecollideany(sprite, bullets):
             sprite.damage()
         if pg.sprite.collide_rect_ratio(1.01)(sprite, player):
