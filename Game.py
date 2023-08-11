@@ -96,10 +96,7 @@ class Game:
                         self._sprite_group.remove(obj)
                     else:
                         if obj.get_x() >= self._camera[0] +self._wnd_size[0]*1.35 and obj.get_x() <= self._camera[0]-self._wnd_size[0] and obj.get_y() >= self._camera[1] - self._wnd_size[1] / 2 or obj.get_y() <= self._camera[1] + self._wnd_size[1] / 2:
-                            self._sprite_group.add(obj)
-                            
-                # Päivitetään peliobjektit
-                
+                            self._sprite_group.add(obj)                
 
             # Jos game_state on PAUSE, asetetaan prev_tick arvoksi 0, tarkastetaan onko escape näppäintä painettu pausen lopettamiseksi
             # ja hypätään loopin alkuun
