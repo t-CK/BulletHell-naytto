@@ -114,34 +114,22 @@ class Game:
             # Renderöidään menu tarvittaessa
             elif self._state == Game_State.IN_MENU:
                 pass
-            # Tyhjennetään ikkunan sisältö ja renderöidään taustaväri
-            self._wnd.draw_background()
+            
             # Renderöidään peliobjektit/valikot
-            if self._state == Game_State.RUNNING:
-                for sprite in self._sprite_group:
-
-                    # DEBUG
-                    try:
-                        sprite.debug_print()
-                        # DEBUG
-                        Log.Log_Error(f"Camera {self._camera}")
-                        Log.Log_Warning(f"Enemy {sprite.get_x()} : {sprite.get_y()}")
-                    except:
-                        pass
+            if self._state == Game_State.RUNNING:                    
                     
-                    
-                    # Render ###################
-                    self._wnd.draw_background()                 # renderöidään taustaväri
-
-                    player_group = []                           # Luodaan Playerille oma group renderöintiä varten
-                    player_group.append(self._player)       
-                    self._wnd.draw_objects(player_group)        # Renderöidään pelaaja
-                    
-                    self._wnd.draw_objects(self._enemy_sprites) # Renderöidään viholliset
-                    self._wnd.draw_objects(self._ui_group)      # Renderöidään UI
-                    self._counters.render_counter_ui()          # Renderöidään counterit
-                    ############################
+                # Render ###################
+                self._wnd.draw_background()                 # renderöidään taustaväri
+                player_group = []                           # Luodaan Playerille oma group renderöintiä varten
+                player_group.append(self._player)       
+                self._wnd.draw_objects(player_group)        # Renderöidään pelaaja
                 
+                self._wnd.draw_objects(self._enemy_sprites) # Renderöidään viholliset
+                self._wnd.draw_objects(self._ui_group)      # Renderöidään UI
+                self._counters.render_counter_ui()          # Renderöidään counterit
+                
+                self._wnd.end_frame()                       # Vaihdetaan front ja back buferit
+                ############################
  
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
                 if self._prev_tick == 0.0:

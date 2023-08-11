@@ -28,9 +28,10 @@ class Window:
         self._wnd.fill(color=(255,0,255))
     
     def draw_objects(self, sprites :sprite.Group):
-        self._wnd.fill(color=(255,0,255))
         for sprite in sprites:
             self._wnd.blit(sprite.surf, sprite.rect)
+            
+    def end_frame(self):
         display.flip()
         
     def get_size(self) -> tuple:
