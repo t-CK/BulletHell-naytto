@@ -206,3 +206,7 @@ if __name__ == "__main__":
                     leg_cursor = leg_cursor - 1 if leg_cursor > 0 else len(legs)-1
                 elif event.key == K_c:
                     leg_cursor = leg_cursor + 1 if leg_cursor < len(legs)-1 else 0
+                    
+                elif event.key == K_RETURN:
+                    pg.image.save(image_preview, "sprite.png")
+                    pg.quit()

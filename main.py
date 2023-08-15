@@ -12,10 +12,12 @@ class App():
     def __init__(self):
         self.ticks = 0
         self.player = self._player = Player((0,0))
-        self._wnd_size = SCREEN_SIZE
-        self.initialize_game()
+        self.screen = SCREEN
         self.spawn_timer = STARTING_SPAWN_TIME
         self.clock = pg.time.Clock()
+        
+        self._wnd_size = SCREEN_SIZE
+        self.initialize_game()
 
     def initialize_game(self):
         """ Initialize player, Ui etc. """
@@ -51,21 +53,7 @@ class App():
         """ Spawns enemies at decreasing intervals, starting at STARTING_SPAWN_TIME ticks apart """
         self.spawn_timer -= 1
         if self.spawn_timer == 0:
-            # Randomize spawn direction (up, right, down, left) and set x and y to be a bit off-screen on that side
-            spawn_side = random.randrange(4)
-            if spawn_side == 0:   # Up
-                x = random.randint(-WIDTH * 0.2, WIDTH * 1.2)
-                y = -30
-            elif spawn_side == 1: # Right
-                x = WIDTH + 30
-                y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
-            elif spawn_side == 2: # Down
-                x = random.randint(-WIDTH * 0.2, WIDTH * 1.2)
-                y = HEIGHT + 30
-            elif spawn_side == 3: # Left
-                x = -30
-                y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
-            enemies.Enemy_Follow(self, (x,y))
+            enemies.Enemy_Follow(self, misc.get_spawn())
             self.spawn_timer = max(10, STARTING_SPAWN_TIME - self.ticks//100)
 
     def check_collisions(self):
@@ -81,10 +69,13 @@ class App():
             if pg.sprite.collide_rect_ratio(1.01)(sprite, self.player) and self.player.hp > 0:
                 self.player.damage(sprite.dmg)
                 sprite.damage()
+                
+        for sprite in tail_group: # Temp, for testing
+            if pg.sprite.spritecollideany(sprite, bullet_group):
+                sprite.damage()
     
     def render_screen(self):
         """ Fill background, blit sprites and flip() the screen """
-        SCREEN.fill((20,20,150))
         for group in (items_group, world_group, enemy_group, bullet_group):
             for sprite in group:
                 SCREEN.blit(sprite.surf, sprite.rect)
@@ -92,6 +83,7 @@ class App():
         for sprite in ui_group:
             SCREEN.blit(sprite.surf, sprite.rect)
         pg.display.flip()
+        SCREEN.fill((20,20,150))
         
     def add_ui(*args):
         pass
