@@ -70,9 +70,9 @@ def process_event_queue(game):
             player.mouse_movement_enabled = not player.mouse_movement_enabled
 
         # Omaa testailua / Väliaikaiset "Debug-napit"
-        """ 1 = Player speed down
-            2 = Player speed up
-            3 = Spawn bullet orbiting player
+        """ 1 = Spawn 3 orbiters
+            2 = Spawn 9 orbiters
+            3 = Spawn bullet orbiting player (with ugly random offset)
             4 = Spawn bullet orbiting previous bullet spawned with 3
             5 = Despawn bullets
             6 = Spawn bullet towards closest enemy
@@ -80,6 +80,9 @@ def process_event_queue(game):
             8 = Spawn (WIP) sine bullet
             9 = Spawn (WIP) sine enemy
             0 = Kill enemies
+            P = Spawn Enemy_Follow
+            O = Spawn Worm (very WIP)
+            I = Spawn a bomb pickup
         """
         global prev
         if event.type == KEYDOWN:
