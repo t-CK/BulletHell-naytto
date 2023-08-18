@@ -113,7 +113,7 @@ class High_Score:
         try:
             # Haetaan haluttuun nimeen liitetyt tiedot tietokannasta ja päivitetään ne
             self._cursor.execute(f"""UPDATE {self._table} SET score = {score}, kills = {kills}, time = {time}
-                                 WHERE pname == '{pName}'""")
+                                 WHERE pname = '{pName}'""")
             self._conn.commit()
         # Virheen sattuessa tulostetaan virheen tiedot
         except sqlite3.Error as e:

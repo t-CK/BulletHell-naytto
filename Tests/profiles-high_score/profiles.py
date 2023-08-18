@@ -89,6 +89,7 @@ class High_Score:
         for name in  self._cursor.execute(f"""SELECT pname FROM {self._table}"""):
             if name[0] == pName:
                 self.update_score(pName, score, kills, time)
+                return
         self._cursor.execute(f"""INSERT INTO {self._table} (pname, score, kills, time)
                              VALUES ('{pName}', {score}, {kills}, {time});""")
         self._conn.commit()
@@ -101,5 +102,5 @@ class High_Score:
         tapot   : int
         aika    : float"""
         self._cursor.execute(f"""UPDATE {self._table} SET score = {score}, kills = {kills}, time = {time}
-                             WHERE pname == '{pName}'""")
+                             WHERE pname = '{pName}'""")
         self._conn.commit()
