@@ -26,12 +26,34 @@ Game(class):
         
     add_sprite:
         Funktio lisää tarvittaessa spriten peliin.
+        
+    add_ui:
+        parametrit:
+            ui : UI luokan instanssi
+        Lisää uuden ui-elementin peliin
+        
+    update_game:
+        parametrit:
+            x_val : int
+            y_val : int
+        Ottaa parametrinä pelaajan liikkeen vastaluvun.
+        Päivittää jokaisen (ei pelaaja)spriten sijainnin annetuilla luvuilla map_scrollingia varten.
 
     game_loop:
         Tarkkailee Game State:a ja hoitaa pelin päivittämisen tai valikot asianmukaisesti.
         päivittää kameran sijainnin kartalla vastaamaan pelaajan sijaintia ja tarkkailee muiden spritejen sijaintia. Tarvittaessa lisää tai poistaa spriten 
         groupista jottei ikkunan ulkopuolella olevia spritejä renderöidä turhaan.
         Laskee delta timen ja tallentaa _delta_time -muuttujaan.
+
+    toggle_state:
+        parametrit:
+            state : Game_State
+        Ottaa parametrinä vastaan Game_State:n.
+        Mikäli annettu Game_State vastaa Game._state -muuttujaan tallennettua Game_State:a, vaihtaa Game_State.PAUSED ja Game_State.RUNNING välilllä.
+        Muussa tapauksessa Game._state arvoksi asetetaan annettu Game_State.
+        
+    get_state:
+        Antaa palautusarvona Game luokan _state -muuttujan.
 
     get_delta_time:
         Lähettää palautusarvona _delta_time(float) -muuttujan

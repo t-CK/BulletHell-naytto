@@ -88,10 +88,10 @@ class High_Score:
     def add_score(self, pName :str, score :int, kills :int, time :float) -> None:
         """Lisää pelaajan pisteet tietokantaan
         Parametrit:
-        pelaaja : str
-        pisteet : int
-        tapot   : int
-        aika    : float"""
+        pName : str
+        score : int
+        kills : int
+        time  : float"""
         # Tarkastetaan ettei haluttua nimeä vielä löydy tietokannasta
         for name in  self._cursor.execute(f"""SELECT pname FROM {self._table}"""):
             if name[0] == pName:
@@ -106,10 +106,10 @@ class High_Score:
     def update_score(self, pName :str, score :int, kills :int, time :float):
         """Päivittää halutun pelaajan tulokset tietokantaan
         Parametrit:
-        pelaaja : str
-        pisteet : int
-        tapot   : int
-        aika    : float"""
+        pName : str
+        score : int
+        kills : int
+        time  : float"""
         try:
             # Haetaan haluttuun nimeen liitetyt tiedot tietokannasta ja päivitetään ne
             self._cursor.execute(f"""UPDATE {self._table} SET score = {score}, kills = {kills}, time = {time}

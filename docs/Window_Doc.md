@@ -9,5 +9,17 @@ Window(class):
 
     draw_background:
         Päivittää ikkunan taustan magneta -värillä
+        
+    draw_objects:
+        Parametrit:
+            sprites : pygame.sprite.Group
+        Ottaa parametrina vastaan pygame sprite groupin.
+        Looppaa groupin jokaisen spriten ja renderöi ikkunaan käyttäen pygame.Surface.blit:tiä.
+    
+    end_frame:
+        Kutsutaan game loopin lopussa, render flown viimeisenä.
+        Vaihtaa front ja back bufferit kutsumalla pygame.display.flip -funktiota.
        
+    get_size:
+        Palauttaa ikkunan koon tuplena (w, h)
     
