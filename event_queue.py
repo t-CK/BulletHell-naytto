@@ -69,7 +69,7 @@ def process_event_queue(game):
         if event.type == KEYDOWN and event.key == K_m:
             player.mouse_movement_enabled = not player.mouse_movement_enabled
 
-        # Omaa testailua / Väliaikaiset "Debug-napit"
+# Temporary debug buttons for testing
         """ 1 = Spawn 3 orbiters
             2 = Spawn 9 orbiters
             3 = Spawn bullet orbiting player (with ugly random offset)
@@ -83,6 +83,8 @@ def process_event_queue(game):
             P = Spawn Enemy_Follow
             O = Spawn Worm (very WIP)
             I = Spawn a bomb pickup
+            
+            Z, X, C = Some patterns made with weapons.spawn_orbiters()
         """
         global prev
         if event.type == KEYDOWN:
@@ -113,6 +115,21 @@ def process_event_queue(game):
                 enemies.Enemy_Worm_Head(game)
             elif event.key == K_i:
                 pickups.Item_Bombs(game, 100,100)
+            elif event.key == K_z:
+                weapons.spawn_orbiters(game, 2, 50)
+                weapons.spawn_orbiters(game, 4, 70)
+                weapons.spawn_orbiters(game, 6, 90)
+                weapons.spawn_orbiters(game, 8, 110)
+                weapons.spawn_orbiters(game, 10, 130)
+            elif event.key == K_x:
+                weapons.spawn_orbiters(game, 2, 50, -30)
+                weapons.spawn_orbiters(game, 4, 70)
+                weapons.spawn_orbiters(game, 6, 90, -30)
+                weapons.spawn_orbiters(game, 8, 110)
+            elif event.key == K_c:
+                weapons.spawn_orbiters(game, 20, 50)
+                weapons.spawn_orbiters(game, 20, 70, -30)
+                
         if pg.key.get_pressed()[K_6]:
             weapons.Bullet_Line(game)
         if pg.key.get_pressed()[K_7]:
