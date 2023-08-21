@@ -58,7 +58,7 @@ def get_step_p(vector: tuple, speed = 1, inverse = False):
     else:
         return (y * speed_factor, -x * speed_factor)
         
-def get_spawn(side = None):
+def get_spawn(side = None, distance = 50):
     """ Returns a tuple of a random point a bit off-screen.
     
     Parameter side excepts an int of 0, 1, 2 or 3, 
@@ -70,15 +70,15 @@ def get_spawn(side = None):
         side = random.randrange(4)
     if side == 0:   # Up
         x = random.randint(-WIDTH * 0.2, WIDTH * 1.2)
-        y = -30
+        y = -distance
     elif side == 1: # Right
-        x = WIDTH + 30
+        x = WIDTH + distance
         y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
     elif side == 2: # Down
         x = random.randint(-WIDTH * 0.2, WIDTH * 1.2)
-        y = HEIGHT + 30
+        y = HEIGHT + distance
     elif side == 3: # Left
-        x = -30
+        x = -distance
         y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
     else:
         print("Invalid spawn side")

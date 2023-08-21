@@ -94,6 +94,13 @@ class Enemy_Follow(Enemy):
     def __init__(self, game, position = misc.get_spawn, target: tuple or Sprite = None,
                  hp = 3, speed = 1, dmg = 1, solid = True):
         super().__init__(game, position, hp, dmg, solid)
+        try:
+            self.surf = pg.image.load("./images/enemy.png").convert()
+            self.surf.set_colorkey((0,255,0))
+            self.color = None
+        except FileNotFoundError:
+            pass
+        self.rect = self.surf.get_rect(center = self.rect.center)
         self.speed = speed
 
         if target is None: # Default to player...
@@ -150,12 +157,14 @@ class Enemy_Sine(Enemy_Follow):
 
 class Enemy_Worm_Head(Enemy):
     """ Worm type enemy head (incomplete) """
-    def __init__(self, game, position = misc.get_spawn, tail_length = 25, turn_rate = 7,
+    def __init__(self, game, position = misc.get_spawn, tail_length = 20, size = 20, turn_rate = 7,
                 turn_speed = 7, hp = 3, speed = 5, dmg = 1, solid = False):
         super().__init__(game, position, hp, dmg, solid)
-        self.surf = pg.Surface([20,20])
+        self.surf = pg.Surface([size,size])
+        self.surf.fill((0,255,0))
+        self.surf.set_colorkey((0,255,0))
         self.rect = self.surf.get_rect(center = (self.rect.center))
-        # TODO: draw something on the surface
+        pg.draw.circle(self.surf, (50,250,50), self.rect.center, size/2)
         self.turn_rate = turn_rate
         self.turn_speed = turn_speed
         self.speed = speed
@@ -172,7 +181,7 @@ class Enemy_Worm_Head(Enemy):
         enemy_group.add(self)
 
         if tail_length > 0:
-            self.child = Enemy_Worm_Tail(self, tail_length - 1)
+            self.child = Enemy_Worm_Tail(self, tail_length - 1, size - 2)
         else:
             self.child = None
 
@@ -200,23 +209,32 @@ class Enemy_Worm_Head(Enemy):
 
 class Enemy_Worm_Tail(pg.sprite.Sprite):
     """ Child object following Enemy_Worm_Head (and other Tails)  (incomplete) """
-    def __init__(self, parent, tail_length):
+    def __init__(self, parent, tail_length, size):
         super().__init__()
-        self.surf = pg.Surface([20,20])
-        # TODO: draw something on the surface
+        self.surf = pg.Surface([size,size])
         self.rect = self.surf.get_rect()
+        self.surf.fill((0,255,0))
+        self.surf.set_colorkey((0,255,0))
+        self.color = (50, 150, 50)
+        pg.draw.circle(self.surf, self.color, self.rect.center, size/2)
         self.parent = parent
+
+        self.rect.center = self.parent.last_position
+        self.last_position = self.parent.last_position
         self.hp = parent.hp
         self.dmg = parent.dmg
         self.invulnerable = 0
+        if size < 5:
+            size = 5
+        self.size = size
 
         all_sprites.add(self)
         enemy_group.add(self)
-        tail_group.add(self)
+        # tail_group.add(self)
         self.dead = False
 
         if tail_length > 0:
-            self.child = Enemy_Worm_Tail(self, tail_length - 1)
+            self.child = Enemy_Worm_Tail(self, tail_length - 1, size - 1)
         else:
             self.child = None
 
@@ -235,11 +253,12 @@ class Enemy_Worm_Tail(pg.sprite.Sprite):
         if self.invulnerable or self.dead:
             return
         self.hp -= amount
+        self.color = pg.Color(self.color).lerp((70,0,0), 0.5)
+        self.rect = self.surf.get_rect()
+        pg.draw.circle(self.surf, self.color, self.rect.center, self.size/2)
         if self.hp <= 0:
             self.death()
         self.invulnerable = 5
-        
-        # TODO: draw something to represent damage
         
     def pass_damage(self, amount):
         """ Pass damage from head on to last child. """
