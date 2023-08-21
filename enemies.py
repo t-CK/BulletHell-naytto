@@ -90,7 +90,7 @@ class Enemy(pg.sprite.Sprite):
         
 class Enemy_Follow(Enemy):
     """ Enemy moving in a straight line towards player """
-    def __init__(self, game, position = (0,0), target: tuple or Sprite = None, hp = 3, speed = 1, dmg = 1, solid = True):
+    def __init__(self, game, position = (0,0), target: tuple or pg.Sprite = None, hp = 3, speed = 1, dmg = 1, solid = True):
         super().__init__(game, position, hp, speed, dmg, solid)
         
         if target is None:

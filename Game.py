@@ -74,7 +74,7 @@ class Game:
         self._camera = self._map.Update()
 
     def game_loop(self):
-        self.add_sprite(enemies.Enemy(self,(100,100))) #DEBUG
+        self.add_sprite(enemies.Enemy_Follow(self)) #DEBUG
         while self._is_Running:         
             # Jos peli on käynnissä, ajetaan loopin ensimmäinen if lohko
             if self._state == Game_State.RUNNING:
@@ -113,7 +113,11 @@ class Game:
                 pass
             
             # Renderöidään peliobjektit/valikot
-            if self._state == Game_State.RUNNING:
+            if self._state == Game_State.RUNNING:                    
+                
+                # Päivitetään viholliset
+                for enemy in self._enemy_sprites:
+                    enemy.update()
                 
                 # Render ###################
                 self._wnd.draw_background()                 # renderöidään taustaväri
