@@ -67,7 +67,7 @@ class Game:
         """Lisää uuden UI -elementin peliin"""
         self._ui_list.append(ui) # Lisätään uusi UI -elementti UI-listaan
         self._ui_group.add(ui)   # Lisätään uusi UI -elementti pygamen sprite groupiin
-    def update_game(self, x_val, y_val):
+    def update_map(self, x_val, y_val):
         """Päivittää pelin spritet vastaamaan pelaajan uutta sijaintia ikkunassa"""
         for ent in self._enemy_sprites:
             ent.rect.move_ip(x_val, y_val)
@@ -113,8 +113,8 @@ class Game:
                 pass
             
             # Renderöidään peliobjektit/valikot
-            if self._state == Game_State.RUNNING:                    
-                    
+            if self._state == Game_State.RUNNING:
+                
                 # Render ###################
                 self._wnd.draw_background()                 # renderöidään taustaväri
                 player_group = []                           # Luodaan Playerille oma group renderöintiä varten

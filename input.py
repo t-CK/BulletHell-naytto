@@ -28,13 +28,13 @@ class Input:
             # Pelaajan liikutus
             if keys[locals.K_UP]:
                 self._p1.move_y(-1)
-                self._game.update_game(0, 1)
+                self._game.update_map(0, 1)
             elif keys[locals.K_DOWN]:
                 self._p1.move_y(1)
-                self._game.update_game(0, -1)
+                self._game.update_map(0, -1)
             if keys[locals.K_RIGHT]:
                 self._p1.move_x(1)
-                self._game.update_game(-1, 0)
+                self._game.update_map(-1, 0)
             elif keys[locals.K_LEFT]:
                 self._p1.move_x(-1)
-                self._game.update_game(1, 0)
+                self._game.update_map(1, 0)
