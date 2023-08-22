@@ -115,6 +115,31 @@ def combine_sprite(head, body, leg) -> (pg.image, list):
         image.blit(next(leg.animation), (0, image.get_height() - leg.image.get_height()))
         animation.append(image)
     return (still_image, get_anim_generator(None, animation))
+    
+### Väkinäinen, nopea SQL-tallennus ja lataus, koska tutkintovaatimus:
+import sqlite3 as sql
+
+def save_sql(head, body, leg):
+    conn = sql.connect("sql.db")
+    cursor = conn.cursor()
+    parts = (heads[head_cursor].name, bodies[body_cursor].name, legs[leg_cursor].name)
+    cursor.execute("UPDATE parts SET head = ?, body = ?, leg = ? WHERE id = 0", parts)
+    conn.commit()
+    conn.close()
+    
+def load_sql():
+    conn = sql.connect("sql.db")
+    cursor = conn.cursor()
+    correct_parts = []
+    parts = cursor.execute("SELECT head, body, leg FROM parts").fetchone()
+    for n in zip((heads, bodies, legs), parts):
+        for i in range(len(n[0])):
+            if n[0][i].name == n[1]:
+                correct_parts.append(i)
+                break
+    conn.close()
+    return correct_parts
+### SQL-touhu ohi
 
 
 for image in listdir(f"{working_directory}\image_generator\heads"):
@@ -185,6 +210,14 @@ if __name__ == "__main__":
             text_rect = text_surfs[_].get_rect()
             text_rect.center = (sprite.rect.x - 90 + (_*150), sprite.rect.bottom + 80)
             SCREEN.blit(text_surfs[_], text_rect)
+                
+        txt = pg.font.Font(None,25).render("F5: Save SQL", False, (0,0,0))
+        text_rect = txt.get_rect(topleft = (30,30))
+        SCREEN.blit(txt, text_rect)
+        txt = pg.font.Font(None,25).render("F8: Load SQL", False, (0,0,0))
+        text_rect = txt.get_rect(topright = (WIDTH-30,30))
+        SCREEN.blit(txt, text_rect)
+        
             
         pg.display.flip()
         clock.tick(7)
@@ -206,3 +239,12 @@ if __name__ == "__main__":
                     leg_cursor = leg_cursor - 1 if leg_cursor > 0 else len(legs)-1
                 elif event.key == K_c:
                     leg_cursor = leg_cursor + 1 if leg_cursor < len(legs)-1 else 0
+                    
+                elif event.key == K_RETURN:
+                    pg.image.save(image_preview, "sprite.png")
+                    pg.quit()
+                    
+                elif event.key == K_F5:
+                    save_sql(heads[head_cursor].name, bodies[body_cursor].name, legs[leg_cursor].name)
+                elif event.key == K_F8:
+                    head_cursor, body_cursor, leg_cursor = load_sql()

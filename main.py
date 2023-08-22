@@ -12,10 +12,12 @@ class App():
     def __init__(self):
         self.ticks = 0
         self.player = self._player = Player((0,0))
-        self._wnd_size = SCREEN_SIZE
-        self.initialize_game()
+        self.screen = SCREEN
         self.spawn_timer = STARTING_SPAWN_TIME
         self.clock = pg.time.Clock()
+        
+        self._wnd_size = SCREEN_SIZE
+        self.initialize_game()
 
     def initialize_game(self):
         """ Initialize player, Ui etc. """
@@ -45,7 +47,7 @@ class App():
             position = (pos_x, pos_y) = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
             while abs(pos_x - self.player.rect.centerx) < 50 + size_x and abs(pos_y - self.player.rect.centery) < 50 + size_y:
                 position = (pos_x, pos_y) = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
-            world.World(*position, *size)
+            world.World(*misc.get_spawn(), *size)
 
     def spawn_enemies(self):
         """ Spawns enemies at decreasing intervals, starting at STARTING_SPAWN_TIME ticks apart """
@@ -67,10 +69,13 @@ class App():
             if pg.sprite.collide_rect_ratio(1.01)(sprite, self.player) and self.player.hp > 0:
                 self.player.damage(sprite.dmg)
                 sprite.damage()
+                
+        for sprite in tail_group: # Temp, for testing
+            if pg.sprite.spritecollideany(sprite, bullet_group):
+                sprite.damage()
     
     def render_screen(self):
         """ Fill background, blit sprites and flip() the screen """
-        SCREEN.fill((20,20,150))
         for group in (items_group, world_group, enemy_group, bullet_group):
             for sprite in group:
                 SCREEN.blit(sprite.surf, sprite.rect)
@@ -78,6 +83,7 @@ class App():
         for sprite in ui_group:
             SCREEN.blit(sprite.surf, sprite.rect)
         pg.display.flip()
+        SCREEN.fill((20,20,150))
         
     def add_ui(*args):
         pass

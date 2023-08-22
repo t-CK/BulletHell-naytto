@@ -1,6 +1,6 @@
 from pygame import sprite
 
-SPRITE_SCALE = 2
+SPRITE_SCALE = 1
 
 FPS = 60
 DEFAULT_SPEED = 4
