@@ -51,21 +51,7 @@ class App():
         """ Spawns enemies at decreasing intervals, starting at STARTING_SPAWN_TIME ticks apart """
         self.spawn_timer -= 1
         if self.spawn_timer == 0:
-            # Randomize spawn direction (up, right, down, left) and set x and y to be a bit off-screen on that side
-            spawn_side = random.randrange(4)
-            if spawn_side == 0:   # Up
-                x = random.randint(-WIDTH * 0.2, WIDTH * 1.2)
-                y = -30
-            elif spawn_side == 1: # Right
-                x = WIDTH + 30
-                y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
-            elif spawn_side == 2: # Down
-                x = random.randint(-WIDTH * 0.2, WIDTH * 1.2)
-                y = HEIGHT + 30
-            elif spawn_side == 3: # Left
-                x = -30
-                y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
-            enemies.Enemy_Follow(self, (x,y))
+            enemies.Enemy_Follow(self, misc.get_spawn())
             self.spawn_timer = max(10, STARTING_SPAWN_TIME - self.ticks//100)
 
     def check_collisions(self):
