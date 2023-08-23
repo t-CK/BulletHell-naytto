@@ -43,7 +43,12 @@ class Counter:
             minutes = int(seconds/60) 
             # Asetetaan sekunttien arvoksi sekunttien jakojäännös 60
             seconds %= 60
-            
+        
+        # Asetetaan minutit olemaan aina 2 numeron luku laskurin selkeyttämiseksi
+        if minutes < 10: minutes = "0" + str(minutes)
+        if seconds < 10: seconds = str(0) + str(seconds)
+        
+        
         # Renderöidään timer
         timer_txt = self._font.render(f"Time: {minutes}:{seconds}", False, (50, 50, 0)) # Luodaan pygame surface, johon on tallennettu sekuntti ja minuutti muuttujat tekstimuodossa
         self._wnd.blit(timer_txt, (20, 20)) # Blitataan timer teksti ikkunaan, eli renderöidään kuva kuvan päälle
