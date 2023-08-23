@@ -10,7 +10,7 @@ SCREEN = pg.display.set_mode(SCREEN_SIZE)
 
 class App():
     def __init__(self):
-        self.ticks = 0
+        self.ticks = self._ticks = 0
         self.player = self._player = Player((0,0))
         self.screen = SCREEN
         self.spawn_timer = STARTING_SPAWN_TIME
@@ -37,7 +37,7 @@ class App():
             self.check_collisions()
             self.render_screen()
             self.clock.tick(FPS)
-            self.ticks += 1
+            self._ticks += 1
 
     def initialize_level(self):
         """ Initialize level. Just spawn a few random obstacles on screen for now. """

@@ -75,6 +75,7 @@ class Enemy(pg.sprite.Sprite):
     def death(self):
         """ Drop XP and die """
         pickups.Xp(self.game, *self.rect.center, random.randrange(len(pickups.Xp._colors))+1)
+        self.game._counters.kill_update()
         self.kill()
 
 class Enemy_Follow(Enemy):
@@ -143,7 +144,7 @@ class Enemy_Sine(Enemy_Follow):
 
         # First (bad) attempt at moving in a wave while closing in
         step = misc.get_step(self.rect.center, self.target, self.speed)
-        self.offset = (-step[1] * 10*math.sin(self.game.ticks/10), step[0] * 10*math.sin(self.game.ticks/10))
+        self.offset = (-step[1] * 10*math.sin(self.game._ticks/10), step[0] * 10*math.sin(self.game._ticks/10))
         self.rect.move_ip(self.offset)
 
 class Enemy_Worm_Head(Enemy):
@@ -163,8 +164,8 @@ class Enemy_Worm_Head(Enemy):
 
         # Ottaa targetin jostain pelaajan läheltä spawnautuessaan, kulkee sen läpi kiemurrellen
         # kunnes despawnautuu ja vaihtaa suuntaa lähtien takaisin ruudun samasta sivusta?
-        target = (game.player.rect.centerx + random.randint(-200, 200),
-                  game.player.rect.centery + random.randint(-200, 200))
+        target = (game._player.rect.centerx + random.randint(-200, 200),
+                  game._player.rect.centery + random.randint(-200, 200))
         self.step = misc.get_step(self, target, self.speed)
         self.sidestep = misc.get_step_p(self.step, self.turn_speed)
         
@@ -180,8 +181,8 @@ class Enemy_Worm_Head(Enemy):
         super().update()
         self.last_position = self.rect.center
         # Combine step forward to sideways move, apply sine for wave (with turn_rate for tweaking shape)
-        x_move, y_move = (self.step[0] + self.sidestep[0] * math.sin(self.game.ticks/self.turn_rate),
-                          self.step[1] + self.sidestep[1] * math.sin(self.game.ticks/self.turn_rate))
+        x_move, y_move = (self.step[0] + self.sidestep[0] * math.sin(self.game._ticks/self.turn_rate),
+                          self.step[1] + self.sidestep[1] * math.sin(self.game._ticks/self.turn_rate))
         self.rect.move_ip(x_move, y_move)
         if self.rect.center == self.last_position: # If movement was completely blocked, set to None
             self.last_position = None

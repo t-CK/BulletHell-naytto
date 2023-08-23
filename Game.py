@@ -43,6 +43,7 @@ class Game:
 
     def __init__(self) -> None:
         self._wnd = Window.Window()
+        self.screen = self._wnd._wnd
         self._state = Game_State.RUNNING
         self._is_Running = True
         # Luodaan array, johon tallennetaan kaikki spritet paitsi pelaaja
@@ -84,7 +85,6 @@ class Game:
         self._camera = self._map.Update()
 
     def game_loop(self):
-        self.add_sprite(enemies.Enemy_Follow(self)) #DEBUG
         while self._is_Running:
             self._clock.tick(60)
             # Jos peli on käynnissä, ajetaan loopin ensimmäinen if lohko
@@ -129,25 +129,29 @@ class Game:
                 all_sprites.update()
                 self._player.update()
                 ui_group.update()
+                
+                # Damage vihollisille & pelaajalle
+                self.check_collisions()
 
                 # Render ###################
 
-                for group in (items_group, world_group, self._enemy_sprites,
+                for group in (items_group, world_group, enemy_group,
                              bullet_group, [self._player], self._ui_group):
                     self._wnd.draw_objects(group)
 
-                self._wnd.end_frame()                       # Vaihdetaan front ja back buferit
-                self._wnd.draw_background()                 # renderöidään taustaväri
-                ############################
 
                 # Lasketaan delta time ja tallennetaan pygame.get_ticks() palauttama arvo prev_tick muuttujaan
                 if self._prev_tick == 0.0:
                     self._delta_time = 0.0
                 else:
                     self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
+                    
                 self._counters.timer_update(self._delta_time)
                 self._counters.render_counter_ui()
+                self._wnd.end_frame()                       # Vaihdetaan front ja back buferit
+                self._wnd.draw_background()                 # renderöidään taustaväri
 
+                ############################
             self._prev_tick = time.get_ticks()
 
 
@@ -179,6 +183,20 @@ class Game:
             while abs(pos_x - self._player.rect.centerx) < 50 + size_x and abs(pos_y - self._player.rect.centery) < 50 + size_y:
                 position = (pos_x, pos_y) = (random.randint(0, self._wnd_size[0]), random.randint(0, self._wnd_size[1]))
             world.World(*position, *size)
+            
+    def check_collisions(self):
+        """ Checks for non-movement related collision.
+    
+        Checks collision of bullets/enemies and enemies/player and deals damage for now.
+        Movement related collision is in each sprite's update() function, and checking
+        distance for pickups happens in the pickup's update().
+        """
+        for s in enemy_group:
+            if sprite.spritecollideany(s, bullet_group):
+                s.damage()
+            if sprite.collide_rect_ratio(1.01)(s, self._player) and self._player.hp > 0:
+                self._player.damage(s.dmg)
+                s.damage()
 
 if __name__ == "__main__":
     game=Game()

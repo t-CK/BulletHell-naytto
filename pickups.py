@@ -8,7 +8,7 @@ class Xp(pg.sprite.Sprite):
     _colors = [(140, 70, 255), (200, 70, 230), (255, 180, 120), (180, 240, 0), (200, 200, 40), (255, 255, 100)]
     def __init__(self, game, pos_x, pos_y, xp_amount = 1):
         super().__init__()
-        self.player = game.player
+        self.player = game._player
         self.size = 5 + 3*xp_amount
         self.surf = pg.Surface([self.size, self.size])
         self.xp_amount = xp_amount
@@ -50,7 +50,7 @@ class Item(pg.sprite.Sprite):
     def update(self):
         """ Draw item, check distance to player, and if close, call for pickup() """
         # TODO: Draw & blit
-        if misc.get_distance(self, self.game.player) < self.game.player.pickup_distance:
+        if misc.get_distance(self, self.game._player) < self.game._player.pickup_distance:
             self.pickup()
 
 class Item_Decoy(Item):

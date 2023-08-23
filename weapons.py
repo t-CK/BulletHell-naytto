@@ -36,7 +36,7 @@ class Bullet_Line(Bullet):
         self.speed = speed
         self.game = game
         if not origin: # Default to player
-            self.origin = game.player.rect.center
+            self.origin = game._player.rect.center
         elif type(origin) is not tuple:
             self.origin = origin.rect.center
         self.rect.center = self.origin
@@ -76,7 +76,7 @@ class Bullet_Orbit(Bullet):
         self.x_offset = offset[2]
         self.y_offset = offset[3]
         if center_object is None: # Default to player
-            self.center_object = game.player
+            self.center_object = game._player
         # If first attribute is a tuple, set it as the center, otherwise two variables are used
         elif type(center_object) == tuple:
             self.center = (self.centerx, self.centery) = center_object
@@ -90,8 +90,8 @@ class Bullet_Orbit(Bullet):
         if self.center_object:
             self.center = (self.centerx, self.centery) = self.center_object.rect.center
         # Adding (r*sin(i), r*cos(i)) to (x,y) follows a circle of radius r as i -> inf.
-        self.rect.center = (self.centerx + self.x_scale*self.radius*math.sin((self.x_offset+self.game.ticks)/self.speed),
-                            self.centery + self.y_scale*self.radius*math.cos((self.y_offset+self.game.ticks)/self.speed))
+        self.rect.center = (self.centerx + self.x_scale*self.radius*math.sin((self.x_offset+self.game._ticks)/self.speed),
+                            self.centery + self.y_scale*self.radius*math.cos((self.y_offset+self.game._ticks)/self.speed))
 
 class Bullet_Sine(Bullet_Line):
     """ Bullet_Line but wavy """
@@ -102,7 +102,7 @@ class Bullet_Sine(Bullet_Line):
 
     def update(self):
         super().update()
-        self.offset = [coordinate * self.wave_scale * math.sin(self.game.ticks/10) for coordinate in
+        self.offset = [coordinate * self.wave_scale * math.sin(self.game._ticks/10) for coordinate in
                        (-self.step[1], self.step[0])]
         self.rect.move_ip(self.offset)
 
@@ -158,4 +158,4 @@ def spawn_orbiters(game, n = 2, radius = 100, speed = 30, ttl = 500):
     """
     offset = 2/n*math.pi*speed
     for i in range(n):
-        Bullet_Orbit(game, game.player, radius, speed, ttl, (1,1,i*offset,i*offset))
+        Bullet_Orbit(game, game._player, radius, speed, ttl, (1,1,i*offset,i*offset))
