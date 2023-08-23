@@ -136,8 +136,6 @@ class Game:
                              bullet_group, [self._player], self._ui_group):
                     self._wnd.draw_objects(group)
 
-                self._counters.render_counter_ui()          # Renderöidään counterit
-
                 self._wnd.end_frame()                       # Vaihdetaan front ja back buferit
                 self._wnd.draw_background()                 # renderöidään taustaväri
                 ############################
@@ -147,6 +145,8 @@ class Game:
                     self._delta_time = 0.0
                 else:
                     self._delta_time = (time.get_ticks() - self._prev_tick) / 1000
+                self._counters.timer_update(self._delta_time)
+                self._counters.render_counter_ui()
 
             self._prev_tick = time.get_ticks()
 
