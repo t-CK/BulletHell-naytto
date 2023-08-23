@@ -25,7 +25,7 @@ class Window:
         self.WIDTH, self.HEIGHT = display.get_window_size()
         
     def draw_background(self):
-        self._wnd.fill(color=(255,0,255))
+        self._wnd.fill(color=(30,30,200))
     
     def draw_objects(self, sprites :sprite.Group):
         for sprite in sprites:
