@@ -1,4 +1,3 @@
-import time
 from pygame import display, surface
 
 class Counter:
@@ -12,10 +11,7 @@ class Counter:
         2. tappojen määrä (ladattaessa peli tallennuksesta), oletusarvona 0
         3. aikalaskuri (ladattaessa peli tallennuksesta), oletusarvona 0.0"""
         self._kill_count = kill
-        if time.time() > 0:
-            self._timer = timer
-        # Luodaan ajastin -objekti laskemaan kulunutta peliaikaa
-        else: self._timer = time.time()
+        self._timer = timer # Peliaika millisekunteina
         self._wnd = wnd
         
     def kill_update(self):
@@ -31,10 +27,13 @@ class Counter:
     
     def get_timer(self):
         """Palauttaa pelin alusta kuluneen ajan sekuntteina"""
-        now = time.time()
-        
-        return time.time() - self._timer
+        return self._timer
     
     def render_counter_ui(self):
         """Renderöi counter UI:t"""
-        pass
+        minutes = 0
+        seconds = int(self._timer)
+        if seconds >= 60:
+            minutes = int(seconds/60)
+            seconds %= 60
+        print(f"MIN {minutes} : SEC {seconds}")
