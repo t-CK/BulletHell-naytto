@@ -51,7 +51,7 @@ class Game:
         self._wnd_size = self._wnd.get_size()
         self._player = player.Player(self._wnd_size)
         # Aloitettaessa uusi peli, luodaan counter -objekti default parametreillä
-        self._counters = Counter(self._wnd)
+        self._counters = Counter(self._wnd._wnd)
         # TODO: Counterin luonti ladattaessa peli tallennuksesta
 
         self._input = input.Input(self, self._player)

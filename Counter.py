@@ -1,4 +1,4 @@
-from pygame import display, surface
+from pygame import display, surface, font
 
 class Counter:
     _kill_count :int
@@ -13,6 +13,9 @@ class Counter:
         self._kill_count = kill
         self._timer = timer # Peliaika millisekunteina
         self._wnd = wnd
+        
+        font.init()
+        self._font = font.SysFont(None, 50, True)
         
     def kill_update(self):
         """Kasvattaa kill counteria yhdellä\n
@@ -31,9 +34,21 @@ class Counter:
     
     def render_counter_ui(self):
         """Renderöi counter UI:t"""
+        # Luodaan muuttujat minuuteille ja sekunneille
         minutes = 0
-        seconds = int(self._timer)
+        seconds = int(self._timer) # Annetaan sekunttimuuttujalle arvoksi timer int muodossa (timer käyttää millisekunteja, joten timer muunnettuna kokonaisluvuksi vastaa sekunteja)
+        # Jos sekuntteja on yli 60, aikaa on kulunut yli minuutti
         if seconds >= 60:
-            minutes = int(seconds/60)
+            # Asetetaan minuuteille arvoksi sekuntit jaettuna 60 ja muunnetaan se kokonaisluvuksi
+            minutes = int(seconds/60) 
+            # Asetetaan sekunttien arvoksi sekunttien jakojäännös 60
             seconds %= 60
-        print(f"MIN {minutes} : SEC {seconds}")
+            
+        # Renderöidään timer
+        timer_txt = self._font.render(f"Time: {minutes}:{seconds}", False, (50, 50, 0)) # Luodaan pygame surface, johon on tallennettu sekuntti ja minuutti muuttujat tekstimuodossa
+        self._wnd.blit(timer_txt, (20, 20)) # Blitataan timer teksti ikkunaan, eli renderöidään kuva kuvan päälle
+        
+        # Renderöidään kill count
+        kill_txt = self._font.render(f"Kills: {self._kill_count}", False, (50, 50, 0))
+        self._wnd.blit(kill_txt, (20, 50))
+        
