@@ -50,7 +50,7 @@ class Game:
         self._enemy_sprites = []
         # Luodaan pelaaja- ja karttaobjektit
         self._wnd_size = self._wnd.get_size()
-        self._player = player.Player(self._wnd_size)
+        self._player = self.player = player.Player(self)
         # Aloitettaessa uusi peli, luodaan counter -objekti default parametreillä
         self._counters = Counter(self._wnd._wnd)
         # TODO: Counterin luonti ladattaessa peli tallennuksesta
@@ -168,21 +168,28 @@ class Game:
         return self._delta_time
 
     def spawn_enemies(self):
-        """ Spawns enemies at decreasing intervals, starting at STARTING_SPAWN_TIME ticks apart """
+        """ Spawns enemies at decreasing intervals, starting at STARTING_SPAWN_TIME ticks apart 
+        Also spawn waves of increasing size every now and then """
         self._spawn_timer -= 1
         if self._spawn_timer == 0:
-            enemies.Enemy_Follow(self)
+            _enemy_type = random.choices([enemies.Enemy_Follow, enemies.Enemy_Sine], (0.9, 0.1))
+            _stats = (_hp, _speed, _damage) = (3+self._ticks//5000, 1+self._ticks//15000, 1+self._ticks//10000)
+            _enemy_type[0](self, misc.get_spawn(), None, *_stats)
             self._spawn_timer = max(10, STARTING_SPAWN_TIME - self._ticks//100)
+
+        if self._ticks % 1500:
+            pass
 
     def initialize_level(self):
         """ Initialize level. Just spawn a few random obstacles on screen for now. """
-        for _ in range(self._wnd_size[0] // 150):
+        for _ in range(self._wnd_size[0] // 10):
             size = (size_x, size_y) = (random.randint(20*SPRITE_SCALE, 100*SPRITE_SCALE),
                                        random.randint(20*SPRITE_SCALE, 100*SPRITE_SCALE))
-            position = (pos_x, pos_y) = (random.randint(0, self._wnd_size[0]), random.randint(0, self._wnd_size[1]))
-            while abs(pos_x - self._player.rect.centerx) < 50 + size_x and abs(pos_y - self._player.rect.centery) < 50 + size_y:
-                position = (pos_x, pos_y) = (random.randint(0, self._wnd_size[0]), random.randint(0, self._wnd_size[1]))
-            world.World(*position, *size)
+            position = (pos_x, pos_y) = (random.randint(-600, self._wnd_size[0]+600), random.randint(-600, self._wnd_size[1]+600))
+            while abs(pos_x - self._player.rect.centerx) < 50 + size_x and \
+                  abs(pos_y - self._player.rect.centery) < 50 + size_y:
+                position = (pos_x, pos_y) = (random.randint(-600, self._wnd_size[0]+600), random.randint(-600, self._wnd_size[1]+600))
+            world.World(self, *position, *size)
             
     def check_collisions(self):
         """ Checks for non-movement related collision.
