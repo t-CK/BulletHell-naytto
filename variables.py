@@ -15,5 +15,3 @@ world_group = sprite.Group()
 items_group = sprite.Group()
 collideable = sprite.Group()
 ui_group = sprite.Group()
-
-tail_group = sprite.Group() # temporary, for testing Worms
