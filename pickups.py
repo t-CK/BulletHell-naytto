@@ -30,7 +30,7 @@ class Xp(pg.sprite.Sprite):
     def pickup(self):
         """ Get picked up and increase player XP """
         self.kill()
-        self.player.xp += self.xp_amount
+        self.player.xp += self.xp_amount**2
         if self.player.xp >= self.player.xp_to_next_level:
             self.player.levelup()
 
@@ -88,7 +88,7 @@ class Item_Bombs(Item):
 
         self.color = (0,0,0) # TODO: Pick a color
         
-        # Temporary lines until update() draws graphics:
+        # Placeholder "graphics"
         self.surf = pg.Surface([10,10])
         self.surf.fill(self.color)
         self.rect = self.surf.get_rect(center = (pos_x, pos_y))

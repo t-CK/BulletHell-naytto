@@ -1,5 +1,5 @@
 import pygame as pg
-import misc
+import misc, weapons
 from image_generator.imagegen import get_sprite_by_names
 from pygame.locals import *
 from variables import *
@@ -14,6 +14,7 @@ class Player(pg.sprite.Sprite):
         xp_to_next_level: XP points needed for next level. XP resets on leveling.
         invulnerable: Ticks of invulnerability (i-frames)
         pickup_distance: Distance from which XP and pickups are picked up
+        weapons = List of instances of weapons.Weapon
 
     Methods:
         update(): Pygame's Sprite-update. Decreases i-frames, also checks for movement input for now.
@@ -22,7 +23,7 @@ class Player(pg.sprite.Sprite):
         levelup(): Trigger leveling up; increases [xp_to_next_level] and resets [xp].
             (levelup() is, at least for now, called by Xp.pickup() and not Player)
     """
-    def __init__(self, wnd_size, hp = 20):
+    def __init__(self, game, hp = 20):
         super().__init__()
         try:
             self.surf = pg.image.load("./image_generator/sprite.png").convert()
@@ -42,12 +43,18 @@ class Player(pg.sprite.Sprite):
         self.speed = DEFAULT_SPEED
         self.lvl = 1
         self.xp = 0
-        self.xp_to_next_level = 100
+        self.xp_to_next_level = 200
         self.invulnerable = 0
         self.pickup_distance = DEFAULT_PICKUP_DISTANCE * SPRITE_SCALE
         self.mouse_movement_enabled = False
+        self.bullet_damage = 1
+        
+        # Create a List of weapons.Weapon instances (with some starting weapons at least for now)
+        self.weapons = [weapons.Weapon(game, weapons.Bullet_Line),
+                        # weapons.Weapon(game, weapons.Bullet_Line, misc.get_random_enemy()),
+                        weapons.Weapon(game, weapons.Orbiters, 500)]
 
-        self._window_size = wnd_size
+        self._window_size = game._wnd_size
 
         # Asetetaan pelaajan X ja Y sijainnit kartalla
         # Pelaaja asetetaan aloittamaan keskeltä pelialuetta
@@ -56,12 +63,14 @@ class Player(pg.sprite.Sprite):
         self.rect.center = [self._window_size[0] / 2, self._window_size[1] / 2]
 
     def update(self):
-        """ Decreases i-frames, also checks for movement input for now. """
+        """ Decreases i-frames, fires weapons (or decreases cooldown) """
         if self.invulnerable > 0:
             self.invulnerable -= 1
+        for weapon in self.weapons:
+            weapon.fire()
+        
 
     def move_x(self, value):
-
         self.rect.move_ip(-self.speed * value, 0)
         while pg.sprite.spritecollideany(self, collideable):
             self.rect.move_ip(1, 0)
@@ -107,9 +116,17 @@ class Player(pg.sprite.Sprite):
                 self.player_death()
 
     def levelup(self):
+        """ Resets XP to 0, raises XP needed and level, upgrades weapons, damage & pickup_distance """
         self.xp -= self.xp_to_next_level
         self.xp_to_next_level *= 1.5
         self.lvl += 1
+        self.bullet_damage *= 1.3
+        self.pickup_distance *= 1.1
+        for weapon in self.weapons:
+            weapon.cooldown_max /= 1.05
+            weapon.speed *= 1.2
+            weapon.ttl *= 1.1
+            weapon.radius *= 1.05
 
     def player_death(self):
         """ Very much temporary, just playing around for now """
