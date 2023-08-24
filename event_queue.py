@@ -84,14 +84,14 @@ def process_event_queue(game):
             O = Spawn Worm (very WIP)
             I = Spawn a bomb pickup
             
-            Z, X, C = Some patterns made with weapons.spawn_orbiters()
+            Z, X, C = Some patterns made with weapons.Orbiters()
         """
         global prev
         if event.type == KEYDOWN:
             if event.key == K_1:
-                weapons.spawn_orbiters(game, 3)
+                weapons.Orbiters(game, 3)
             elif event.key == K_2:
-                weapons.spawn_orbiters(game, 9)
+                weapons.Orbiters(game, 9)
             elif event.key == K_3:
                 offset = (random.randrange(0,4), random.randrange(0,4), random.randrange(0,20), random.randrange(0,20))
                 prev = weapons.Bullet_Orbit(game, player, random.randrange(20,150), random.randrange(10,50), -1, offset)
@@ -116,19 +116,19 @@ def process_event_queue(game):
             elif event.key == K_i:
                 pickups.Item_Bombs(game, 100,100)
             elif event.key == K_z:
-                weapons.spawn_orbiters(game, 2, 50)
-                weapons.spawn_orbiters(game, 4, 70)
-                weapons.spawn_orbiters(game, 6, 90)
-                weapons.spawn_orbiters(game, 8, 110)
-                weapons.spawn_orbiters(game, 10, 130)
+                weapons.Orbiters(game, 2, 50)
+                weapons.Orbiters(game, 4, 70)
+                weapons.Orbiters(game, 6, 90)
+                weapons.Orbiters(game, 8, 110)
+                weapons.Orbiters(game, 10, 130)
             elif event.key == K_x:
-                weapons.spawn_orbiters(game, 2, 50, -30)
-                weapons.spawn_orbiters(game, 4, 70)
-                weapons.spawn_orbiters(game, 6, 90, -30)
-                weapons.spawn_orbiters(game, 8, 110)
+                weapons.Orbiters(game, 2, 50, -30)
+                weapons.Orbiters(game, 4, 70)
+                weapons.Orbiters(game, 6, 90, -30)
+                weapons.Orbiters(game, 8, 110)
             elif event.key == K_c:
-                weapons.spawn_orbiters(game, 20, 50)
-                weapons.spawn_orbiters(game, 20, 70, -30)
+                weapons.Orbiters(game, 20, 50)
+                weapons.Orbiters(game, 20, 70, -30)
                 
         if pg.key.get_pressed()[K_6]:
             weapons.Bullet_Line(game)

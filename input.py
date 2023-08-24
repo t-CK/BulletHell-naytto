@@ -123,14 +123,14 @@ class Input:
                 O = Spawn Worm (very WIP)
                 I = Spawn a bomb pickup
             
-                Z, X, C = Some patterns made with weapons.spawn_orbiters()
+                Z, X, C = Some patterns made with weapons.Orbiters()
             """
             global prev
             if e.type == locals.KEYDOWN:
                 if e.key == locals.K_1:
-                    weapons.spawn_orbiters(self._game, 3)
+                    weapons.Orbiters(self._game, 3)
                 elif e.key == locals.K_2:
-                    weapons.spawn_orbiters(self._game, 9)
+                    weapons.Orbiters(self._game, 9)
                 elif e.key == locals.K_3:
                     offset = (random.randrange(0,4), random.randrange(0,4), random.randrange(0,20), random.randrange(0,20))
                     prev = weapons.Bullet_Orbit(self._game, self._p1, random.randrange(20,150), random.randrange(10,50), -1, offset)
@@ -155,19 +155,19 @@ class Input:
                 elif e.key == locals.K_i:
                     pickups.Item_Bombs(self._game, 100,100)
                 elif e.key == locals.K_z:
-                    weapons.spawn_orbiters(self._game, 2, 50)
-                    weapons.spawn_orbiters(self._game, 4, 70)
-                    weapons.spawn_orbiters(self._game, 6, 90)
-                    weapons.spawn_orbiters(self._game, 8, 110)
-                    weapons.spawn_orbiters(self._game, 10, 130)
+                    weapons.Orbiters(self._game, 2, 50)
+                    weapons.Orbiters(self._game, 4, 70)
+                    weapons.Orbiters(self._game, 6, 90)
+                    weapons.Orbiters(self._game, 8, 110)
+                    weapons.Orbiters(self._game, 10, 130)
                 elif e.key == locals.K_x:
-                    weapons.spawn_orbiters(self._game, 2, 50, -30)
-                    weapons.spawn_orbiters(self._game, 4, 70)
-                    weapons.spawn_orbiters(self._game, 6, 90, -30)
-                    weapons.spawn_orbiters(self._game, 8, 110)
+                    weapons.Orbiters(self._game, 2, 50, -30)
+                    weapons.Orbiters(self._game, 4, 70)
+                    weapons.Orbiters(self._game, 6, 90, -30)
+                    weapons.Orbiters(self._game, 8, 110)
                 elif e.key == locals.K_c:
-                    weapons.spawn_orbiters(self._game, 20, 50)
-                    weapons.spawn_orbiters(self._game, 20, 70, -30)
+                    weapons.Orbiters(self._game, 20, 50)
+                    weapons.Orbiters(self._game, 20, 70, -30)
                     
             if keys[locals.K_6]:
                 weapons.Bullet_Line(self._game)

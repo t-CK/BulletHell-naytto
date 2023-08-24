@@ -2,6 +2,27 @@ import pygame as pg
 import misc, math
 from variables import *
 
+import inspect
+
+
+class Weapon():
+    """ Object for firing weapons (other classes in this file) and keeping track of cooldowns & parameters """
+    def __init__(self, game, weapon, cooldown = 50):
+        self.game = game
+        self.weapon = weapon
+        self.cooldown_max = cooldown
+        self.cooldown = cooldown
+        self.speed = inspect.signature(weapon).parameters['speed'].default
+        self.ttl = inspect.signature(weapon).parameters['ttl'].default
+        self.radius = inspect.signature(weapon).parameters['radius'].default if hasattr(weapon, "radius") else 0
+        
+    def fire(self):
+        if self.cooldown > 0:
+            self.cooldown -= 1
+        else:
+            self.weapon(self.game) # TODO: give appropriate parameters depending on weapon
+            self.cooldown = self.cooldown_max
+    
 class Bullet(pg.sprite.Sprite):
     """ Parent class for bullets """
     def __init__(self):
@@ -149,13 +170,16 @@ class Explosion(pg.sprite.Sprite):
         pg.draw.ellipse(self.game.screen, (255,255,255), self.rect.inflate(5,5))
         self.kill()
 
-
-def spawn_orbiters(game, n = 2, radius = 100, speed = 30, ttl = 500):
-    """ Spawns n equidistant Bullet_Orbits around player
+class Orbiters():
+    """ Spawns n equidistant Bullet_Orbits around player for self.ttl ticks where n defaults to player level
 
     As math.sin() and .cos() use radians (and the formula in Bullet_Orbit divides by speed)
     adding (2/n*pi * speed) to both should make following bullet equally spaced.
     """
-    offset = 2/n*math.pi*speed
-    for i in range(n):
-        Bullet_Orbit(game, game._player, radius, speed, ttl, (1,1,i*offset,i*offset))
+    def __init__(self, game, n = None, radius = 100, speed = 30, ttl = 250):
+        if not n:
+            n = game.player.lvl
+        offset = 2/n*math.pi*speed
+        for i in range(n):
+            b = Bullet_Orbit(game, None, radius, speed, ttl, (1,1,i*offset,i*offset))
+            
