@@ -7,7 +7,7 @@ import inspect
 
 class Weapon():
     """ Object for firing weapons (other classes in this file) and keeping track of cooldowns & parameters """
-    def __init__(self, game, weapon, cooldown = 50):
+    def __init__(self, game, weapon, cooldown = 50, **kwargs):
         self.game = game
         self.weapon = weapon
         self.cooldown_max = cooldown
@@ -15,13 +15,24 @@ class Weapon():
         self.speed = inspect.signature(weapon).parameters['speed'].default
         self.ttl = inspect.signature(weapon).parameters['ttl'].default
         self.radius = inspect.signature(weapon).parameters['radius'].default if hasattr(weapon, "radius") else 0
-        
+
     def fire(self):
         if self.cooldown > 0:
             self.cooldown -= 1
         else:
-            self.weapon(self.game) # TODO: give appropriate parameters depending on weapon
+            # give appropriate parameters depending on weapon (Incomplete)  TODO: Finish
+            import weapons  # Not pretty, I know. Just wanted to finally find an actual use for match-case
+            match self.weapon:
+                case weapons.Bullet_Line:
+                    pass
+                case weapons.Orbiters:
+                    pass
+                case _:
+                    print("Invalid weapon type")
+                
             self.cooldown = self.cooldown_max
+            
+            self.weapon(self.game) 
     
 class Bullet(pg.sprite.Sprite):
     """ Parent class for bullets """

@@ -10,7 +10,7 @@ def process_event_queue(game):
     player = game.player
 
     # Keyboard input for player movement with arrows & WASD
-    if not player.mouse_movement_enabled:
+    if not player.mouse_movement_enabled and player.hp > 0:
         keys = pg.key.get_pressed()
         if keys[K_UP] or keys[K_w]:
             player.move_player(0, -player.speed)
@@ -29,8 +29,8 @@ def process_event_queue(game):
             while pg.sprite.spritecollideany(player, collideable):
                 player.move_player(1, 0)
 
-    # Mouse movement testing
-    else:
+    # Mouse movement
+    elif player.mouse_movement_enabled and player.hp > 0:
         MIN_MOUSE_DISTANCE = 30
         mouse_x, mouse_y = pg.mouse.get_pos()
         distance_from_player = misc.get_distance((mouse_x, mouse_y), player.rect.center)

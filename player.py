@@ -51,7 +51,6 @@ class Player(pg.sprite.Sprite):
         
         # Create a List of weapons.Weapon instances (with some starting weapons at least for now)
         self.weapons = [weapons.Weapon(game, weapons.Bullet_Line),
-                        # weapons.Weapon(game, weapons.Bullet_Line, misc.get_random_enemy()),
                         weapons.Weapon(game, weapons.Orbiters, 500)]
 
         self._window_size = game._wnd_size
@@ -68,7 +67,6 @@ class Player(pg.sprite.Sprite):
             self.invulnerable -= 1
         for weapon in self.weapons:
             weapon.fire()
-        
 
     def move_x(self, value):
         self.rect.move_ip(-self.speed * value, 0)
@@ -133,7 +131,7 @@ class Player(pg.sprite.Sprite):
         self.surf = pg.transform.rotate(self.surf, 90)
         for sprite in bullet_group:
             sprite.kill()
-        self.update = lambda *_: None
+        self.update = lambda *_: None # TODO: Something, now that movement's in input.py
 
     def move_player(self, x, y):
         """ Move every non-player (and non-ui) sprite (-x,-y) pixels """

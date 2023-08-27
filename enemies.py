@@ -148,7 +148,22 @@ class Enemy_Sine(Enemy_Follow):
         self.rect.move_ip(self.offset)
 
 class Enemy_Worm_Head(Enemy):
-    """ Worm type enemy head (incomplete and buggy) """
+    """ Worm type enemy head
+    
+    Variables not in Enemy:
+        tail_length
+            Length of Worm. 
+        size
+            Side of square pg.Surface. Passed to child as one smaller.
+        turn_rate
+            Divides ticks in movement's sin() for shaping wave.
+        turn_speed
+            Speed of sideways movement
+        child
+            "Attached" Enemy_Worm_Tail(). tail_length, size and dmg are passed to child as smaller.
+    
+    No idea what to do after collision yet, so solid probably shouldn't be set True.
+    """
     def __init__(self, game, position = misc.get_spawn, tail_length = 30, size = 25, turn_rate = 7,
                 turn_speed = 7, hp = 5, speed = 5, dmg = 1, solid = False):
         super().__init__(game, position, hp, dmg, solid)
@@ -199,6 +214,7 @@ class Enemy_Worm_Head(Enemy):
             self.last_position = None
 
     def get_target(self):
+        """ Set target to a random point near player """
         target = (self._centerx + random.randint(-200, 200),
                   self._centery + random.randint(-200, 200))
         self.step = misc.get_step(self, target, self.speed)
@@ -218,7 +234,7 @@ class Enemy_Worm_Head(Enemy):
         self.invulnerable = 5
 
 class Enemy_Worm_Tail(pg.sprite.Sprite):
-    """ Child object following Enemy_Worm_Head (and other Tails)  (incomplete) """
+    """ Child object following Enemy_Worm_Head (and other Tails) """
     def __init__(self, parent, tail_length, size, hp):
         super().__init__()
         self.surf = pg.Surface([size,size])
@@ -278,5 +294,5 @@ class Enemy_Worm_Tail(pg.sprite.Sprite):
         if self.parent:
             self.parent.child = None
             self.parent = None
-        self.child = None
+        # self.child = None
         enemy_group.remove(self)

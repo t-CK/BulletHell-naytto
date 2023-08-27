@@ -54,16 +54,47 @@ class App():
 
     def spawn_enemies(self):
         """ Spawns enemies at decreasing intervals, starting at STARTING_SPAWN_TIME ticks apart 
-        Also spawn waves of increasing size every now and then """
+        Also spawn bigger waves of increasing size or major enemies every now and then """
         self.spawn_timer -= 1
         if self.spawn_timer == 0:
             _enemy_type = random.choices([enemies.Enemy_Follow, enemies.Enemy_Sine], (0.9, 0.1))
             _stats = (_hp, _speed, _damage) = (3+self._ticks//5000, 1+self._ticks//15000, 1+self._ticks//10000)
             _enemy_type[0](self, misc.get_spawn(), None, *_stats)
             self.spawn_timer = max(10, STARTING_SPAWN_TIME - self._ticks//100)
-
-        if self._ticks % 1500:
-            pass
+        
+        # Spawn one of 4 "wave types"
+        if self._ticks % 1500 == 0:
+            _wave_type = random.randrange(4)            
+            # Worms
+            if _wave_type == 0:
+                _wave_size = 1+self._ticks//7000
+                for _ in range(_wave_size):
+                    _distance_offset = random.randrange(100)
+                    enemies.Enemy_Worm_Head(self, misc.get_spawn(None, 100 + _distance_offset))
+            # A closely spawning group of Enemy_Follow
+            elif _wave_type == 1:
+                _wave_size = 1+self._ticks//1500
+                _group_center = misc.get_spawn(None, 200)
+                for _ in range(_wave_size):
+                    _random_x_offset = random.randrange(150)
+                    _random_y_offset = random.randrange(150)
+                    _position = (_group_center[0] + _random_x_offset, _group_center[1] + _random_y_offset)
+                    enemies.Enemy_Follow(self, _position)
+            # A closely spawning group of Enemy_Sine
+            elif _wave_type == 2:
+                _wave_size = 1+self._ticks//2500
+                _group_center = misc.get_spawn(None, 300)
+                for _ in range(_wave_size):
+                    _random_x_offset = random.randrange(250)
+                    _random_y_offset = random.randrange(250)
+                    _position = (_group_center[0] + _random_x_offset, _group_center[1] + _random_y_offset)
+                    enemies.Enemy_Sine(self, _position)
+            # Randomly placed Enemy_Sines
+            elif _wave_type == 3:
+                _wave_size = 1+self._ticks//1500
+                for _ in range(_wave_size):
+                    _distance_offset = random.randrange(150)
+                    enemies.Enemy_Sine(self, misc.get_spawn(None, 150 + _distance_offset))
 
     def check_collisions(self):
         """ Checks for non-movement related collision.
