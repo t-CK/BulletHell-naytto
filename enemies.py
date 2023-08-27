@@ -37,7 +37,7 @@ class Enemy(pg.sprite.Sprite):
         else:
             self.rect.center = position()
 
-        self.hp = hp
+        self.hp = hp + game._ticks//4000
         self.dmg = dmg
         self.solid = solid
         self.invulnerable = 0
@@ -73,8 +73,10 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = temp_center
 
     def death(self):
-        """ Drop XP and die """
+        """ Drop XP (and every once in a while, a Bombs-item) and die """
         pickups.Xp(self.game, *self.rect.center, random.randrange(len(pickups.Xp._colors))+1)
+        if random.randrange(100) < 5:
+            pickups.Item_Bombs(self.game, *self.rect.center)
         self.game._counters.kill_update()
         self.kill()
 
