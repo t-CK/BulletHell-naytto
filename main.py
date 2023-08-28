@@ -7,7 +7,7 @@ from variables import *
 from Counter import Counter
 
 pg.init()
-SCREEN_SIZE = (WIDTH, HEIGHT) = (1000,800)
+SCREEN_SIZE = (WIDTH, HEIGHT) = (640,480)
 SCREEN = pg.display.set_mode(SCREEN_SIZE)
 
 class App():
