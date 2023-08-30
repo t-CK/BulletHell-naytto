@@ -69,17 +69,17 @@ def get_spawn(side = None, distance = 50):
     if not side:
         side = random.randrange(4)
     if side == 0:   # Up
-        x = random.randint(-WIDTH * 0.2, WIDTH * 1.2)
+        x = random.randint(int(-WIDTH * 0.2), int(WIDTH * 1.2))
         y = -distance
     elif side == 1: # Right
         x = WIDTH + distance
-        y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
+        y = random.randint(int(-HEIGHT * 0.3), int(HEIGHT * 1.3))
     elif side == 2: # Down
-        x = random.randint(-WIDTH * 0.2, WIDTH * 1.2)
+        x = random.randint(int(-WIDTH * 0.2), int(WIDTH * 1.2))
         y = HEIGHT + distance
     elif side == 3: # Left
         x = -distance
-        y = random.randint(-HEIGHT * 0.3, HEIGHT * 1.3)
+        y = random.randint(int(-HEIGHT * 0.3), int(HEIGHT * 1.3))
     else:
         print("Invalid spawn side")
     return (x, y)
